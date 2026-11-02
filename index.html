@@ -90,22 +90,21 @@ button{font-family:var(--ui)}
     <div class="modes">
       <div class="mode">
         <h2>Daily Siege</h2>
-        <p id="dailyDesc">Same field and same waves for everyone today.</p>
+        <p id="dailyDesc">Same waves for everyone today.</p>
         <div class="best" id="dailyBest">No score yet today</div>
         <button class="btn primary" id="playDaily">Play today's siege</button>
       </div>
       <div class="mode">
         <h2>Endless</h2>
-        <p>A fresh random field every run. Waves never stop and keep getting tougher.</p>
+        <p>Random waves every run. They never stop and keep getting tougher.</p>
         <div class="best" id="endlessBest">No best yet</div>
         <button class="btn primary" id="playEndless">Start endless run</button>
       </div>
     </div>
     <ul class="how">
-      <li><b>Build anywhere</b> on the grass. Raiders reroute around towers, but you can never seal them in completely.</li>
+      <li><b>Raiders enter on the left</b> and head for the gap in the fence on the right. <b>Build anywhere</b> on the grass. Raiders reroute around towers, but you can never seal them in completely.</li>
       <li><b>The dashed line</b> shows their current route. Hover or tap a tile to preview the new route before you build.</li>
       <li><b>Gyros and blimps fly</b> straight over your maze. Only the Rattler and Rocket Rack can hit them.</li>
-      <li><b>The north gate</b> opens at wave 6, sending a second column down from the top.</li>
       <li><b>Send waves early</b> for bonus cash. Keys: 1–4 pick a tower, U upgrade, S sell, N next wave, Space pause.</li>
     </ul>
   </section>
@@ -154,7 +153,7 @@ const DIRS=[[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.4142],[1,-1,1.4142],[-1,1,1
 const idx=(c,r)=>r*COLS+c;
 const goalsE=LANE_E.map(r=>idx(COLS-1,r)),spawnsE=LANE_E.map(r=>idx(0,r));
 const goalsS=LANE_S.map(c=>idx(c,ROWS-1)),spawnsS=LANE_S.map(c=>idx(c,0));
-const reserved=new Uint8Array(N);[...goalsE,...spawnsE,...goalsS,...spawnsS].forEach(i=>reserved[i]=1);
+const reserved=new Uint8Array(N);[...goalsE,...spawnsE].forEach(i=>reserved[i]=1);
 const OUT='#1d2416';
 
 const TOWERS=[
@@ -219,7 +218,7 @@ function checkPlace(i){
   for(const e of G.enemies){if(e.dead||e.air)continue;const[c,r]=cellOf(e);if(c>=0&&r>=0&&c<COLS&&r<ROWS&&idx(c,r)===i)return{ok:false,msg:'A raider is standing there'}}
   const fE=computeField(goalsE,i),fS=computeField(goalsS,i);
   const seal={ok:false,msg:'That would seal the route. Raiders need a way through.',seal:true};
-  if(!spawnsE.every(s=>isFinite(fE[s]))||!spawnsS.every(s=>isFinite(fS[s])))return seal;
+  if(!spawnsE.every(s=>isFinite(fE[s])))return seal;
   for(const e of G.enemies){if(e.dead||e.air)continue;const[c,r]=cellOf(e);if(c<0||r<0||c>=COLS||r>=ROWS)continue;
     if(!isFinite((e.route==='E'?fE:fS)[idx(c,r)]))return seal}
   return{ok:true,fE,fS,pathE:tracePath(fE,idx(0,6),true,i),pathS:tracePath(fS,idx(11,0),false,i)}
@@ -246,14 +245,14 @@ function genWave(w){
   const a=pick();if(w>=6&&pool.length>1){let b=pick();if(b===a)b=pool[Math.floor(rng()*pool.length)];add(a,budget*.6);add(b,budget*.4)}else add(a,budget);
   if(w%5===0)for(let k=0;k<Math.floor(w/5);k++)types.push('crawler');
   if(w%10===0)for(let k=0;k<w/10;k++)types.push('blimp');
-  return types.map(t=>({type:t,w,lane:Math.floor(rng()*3),route:w>=NORTH_WAVE&&rng()<.42?'S':'E',gap:ENEMIES[t].gap}))
+  return types.map(t=>({type:t,w,lane:Math.floor(rng()*3),route:'E',gap:ENEMIES[t].gap}))
 }
 function summarize(list){const m={};list.forEach(s=>m[s.type]=(m[s.type]||0)+1);
   return Object.entries(m).map(([t,n])=>`<b>${n}</b> ${ENEMIES[t].name[n>1?1:0]}${ENEMIES[t].air?' (air)':''}`).join(' · ')}
 function launchWave(bonus){
   G.wave++;G.queue=G.nextWave.slice();G.spawnT=0;G.counting=false;G.score+=G.wave*20;
   if(bonus){G.cash+=bonus;G.score+=bonus*5;floatText(W/2,40,`Early bonus +$${bonus}`,'#ffe08a')}
-  G.nextWave=genWave(G.wave+1);toast(G.wave===NORTH_WAVE?`Wave ${G.wave}: the north gate is open`:`Wave ${G.wave}`);infoKey=''}
+  G.nextWave=genWave(G.wave+1);toast(`Wave ${G.wave}`);infoKey=''}
 
 // ---------- entities ----------
 function spawnEnemy(s){const d=ENEMIES[s.type],hp=Math.round(d.hp*hpMul(s.w));let x,y,tx=0,ty=0;
@@ -344,7 +343,7 @@ function buildBg(){const b=bgc.getContext('2d'),rng=mulberry32(G.seed^0x9e3779b9
   // fence posts at exits
   b.fillStyle='#7a5a36';b.strokeStyle=OUT;b.lineWidth=2;
   for(const r of [4,8]){rr(b,W-14,r*CS+(r===4?CS-10:2),10,8,2);b.fill();b.stroke()}
-  for(const c of [9,13]){rr(b,c*CS+(c===9?CS-10:2),H-14,8,10,2);b.fill();b.stroke()}
+  for(const r of [4,8]){rr(b,4,r*CS+(r===4?CS-10:2),10,8,2);b.fill();b.stroke()}
   for(let i=0;i<N;i++)if(G.rock[i]){const c=i%COLS,r=(i/COLS)|0,cx=(c+.5)*CS,cy=(r+.5)*CS;
     b.fillStyle='rgba(30,45,20,.3)';b.beginPath();b.ellipse(cx+3,cy+5,16,12,0,0,7);b.fill();
     b.beginPath();const n=7;for(let k=0;k<n;k++){const a=k/n*6.283,rad=13+rng()*5;b[k?'lineTo':'moveTo'](cx+Math.cos(a)*rad,cy+Math.sin(a)*rad*.85)}b.closePath();
@@ -401,12 +400,8 @@ function drawPath(pts,col,dash,t){if(!pts)return;ctx.save();ctx.strokeStyle=col;
 function render(t){
   ctx.setTransform(DPR,0,0,DPR,0,0);if(!G)return;
   ctx.drawImage(bgc,0,0,W,H);
-  const northOpen=G.wave+1>=NORTH_WAVE||G.wave>=NORTH_WAVE;
+  const northOpen=false;
   for(const r of LANE_E){chevrons(14,(r+.5)*CS,0,t);chevrons(W-20,(r+.5)*CS,0,t)}
-  if(northOpen)for(const c of LANE_S){chevrons((c+.5)*CS,14,Math.PI/2,t);chevrons((c+.5)*CS,H-20,Math.PI/2,t)}
-  else{ctx.fillStyle='rgba(40,30,15,.45)';ctx.fillRect(10*CS,0,3*CS,CS);ctx.fillRect(10*CS,H-CS,3*CS,CS);
-    ctx.fillStyle='#fff6dc';ctx.font='700 13px "Barlow Semi Condensed",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(`NORTH GATE · WAVE ${NORTH_WAVE}`,11.5*CS,CS/2)}
   if(buildType!==null){ctx.strokeStyle='rgba(20,40,10,.16)';ctx.lineWidth=1;ctx.beginPath();for(let c=1;c<COLS;c++){ctx.moveTo(c*CS,0);ctx.lineTo(c*CS,H)}for(let r=1;r<ROWS;r++){ctx.moveTo(0,r*CS);ctx.lineTo(W,r*CS)}ctx.stroke()}
   const pv=G.preview&&G.preview.i===hover&&buildType!==null?G.preview:null;
   if(pv&&pv.ok){drawPath(pv.pathE,'rgba(255,232,150,.95)',[8,7],t);if(northOpen)drawPath(pv.pathS,'rgba(255,232,150,.95)',[8,7],t)}
@@ -501,7 +496,7 @@ document.addEventListener('keydown',ev=>{if(!G||G.over||ev.target.tagName==='TEX
 
 function bestKey(mode,date){return mode==='daily'?'meadowsiege:best:daily:'+date:'meadowsiege:best:endless'}
 function showStart(){$('startScreen').hidden=false;$('overScreen').hidden=true;$('gameUI').hidden=true;$('hud').hidden=true;$('modeTag').textContent='Open-field defence';
-  const d=todayStr();$('dailyDesc').textContent=`Same field and same waves for everyone on ${d}. Play it as many times as you like.`;
+  const d=todayStr();$('dailyDesc').textContent=`Same waves for everyone on ${d}. Play it as many times as you like.`;
   const bd=store.get(bestKey('daily',d)),be=store.get(bestKey('endless'));
   $('dailyBest').textContent=bd?`Today's best: wave ${bd.wave}, ${fmt(bd.score)} pts`:'No score yet today';
   $('endlessBest').textContent=be?`Best run: wave ${be.wave}, ${fmt(be.score)} pts`:'No best yet'}
@@ -509,11 +504,11 @@ function newGame(mode){lastMode=mode;const dateStr=todayStr();
   const seed=mode==='daily'?hashStr('meadow-siege:'+dateStr):(Math.random()*4294967296)>>>0;
   G={mode,dateStr,seed,rock:new Uint8Array(N),towerAt:new Array(N).fill(null),towers:[],enemies:[],proj:[],fx:[],parts:[],
     lives:20,cash:180,score:0,wave:0,queue:[],spawnT:0,countdown:FIRST_GAP,counting:true,kills:0,time:0,over:false,flash:0};
-  genMap(mulberry32(seed));refreshFields();G.nextWave=genWave(1);buildBg();
+  refreshFields();G.nextWave=genWave(1);buildBg();
   sel=null;buildType=null;hover=-1;pending=-1;paused=false;speed=1;$('speedBtn').textContent='1×';$('pauseBtn').textContent='Pause';
   setBuild(null);infoKey='';hudCache={};
   $('startScreen').hidden=true;$('overScreen').hidden=true;$('gameUI').hidden=false;$('hud').hidden=false;
-  $('modeTag').textContent=mode==='daily'?`Daily Siege · ${dateStr}`:`Endless · field #${seed.toString(16).slice(0,6)}`;
+  $('modeTag').textContent=mode==='daily'?`Daily Siege · ${dateStr}`:'Endless';
   toast('Build your maze, then start wave 1')}
 function gameOver(){G.over=true;G.lives=0;const k=bestKey(G.mode,G.dateStr),prev=store.get(k);const waves=Math.max(0,G.wave-1);
   let best=prev;if(!prev||G.score>prev.score){best={score:G.score,wave:waves};store.set(k,best)}
