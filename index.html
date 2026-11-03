@@ -40,13 +40,13 @@ canvas#cv.building{touch-action:none}
 .toast{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:rgba(20,26,16,.88);color:var(--fg);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px;pointer-events:none;opacity:0;transition:opacity .2s;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
 .toast.show{opacity:1}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
-.palette{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;flex:1 1 100%;min-width:0}
+.palette{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;flex:1 1 100%;min-width:0}
 .tbtn{display:flex;align-items:center;gap:8px;background:var(--panel);border:2px solid var(--line);border-radius:8px;padding:6px 8px;color:var(--fg);font:inherit;cursor:pointer;text-align:left;min-width:0}
 .tbtn canvas{width:34px;height:34px;flex:none}
 .tbtn .t{display:flex;flex-direction:column;min-width:0}
 .tbtn .t b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tbtn .t span{font-size:13px;color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
-.tbtn .key{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.tbtn .key{display:none}
 .tbtn.on{border-color:var(--accent);background:var(--panel-2)}
 .tbtn.poor .t span{color:var(--danger)}
 .controls{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 300px}
@@ -88,7 +88,7 @@ button{font-family:var(--ui)}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .share{width:100%;min-height:54px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;font:inherit;padding:8px;resize:none}
 @media (max-width:560px){.brand{font-size:20px}.chip{min-width:50px;padding:3px 8px}.chip b{font-size:16px}
-  .palette{grid-template-columns:repeat(5,minmax(0,1fr));flex-basis:100%}.tbtn{flex-direction:column;gap:0;padding:4px 2px}.tbtn .t{align-items:center}.tbtn .t b,.tbtn .key{display:none}
+  .palette{grid-template-columns:repeat(6,minmax(0,1fr));flex-basis:100%;gap:4px}.tbtn{flex-direction:column;gap:0;padding:4px 2px}.tbtn .t{align-items:center}.tbtn .t b,.tbtn .key{display:none}
   .controls .btn{padding:8px 10px;font-size:14px}#prog{display:none!important}.app{padding-block:10px 20px;gap:8px}}
 @media (max-width:759px) and (orientation:portrait){canvas#cv{width:auto;max-width:100%;max-height:calc(100svh - 196px);margin:0 auto}}
 </style>
@@ -134,8 +134,8 @@ button{font-family:var(--ui)}
       <li><b>Raiders enter on the left</b> and head for the gap in the fence on the right. <b>Build anywhere</b> on the grass. Raiders reroute around towers, but you can never seal them in completely.</li>
       <li><b>The dashed line</b> shows their current route. Hover or tap a tile to preview the new route before you build.</li>
       <li><b>Gyros and blimps fly</b> straight over your maze. Only the Rattler and Rocket Rack can hit them.</li>
-      <li><b>Five towers, four levels each:</b> Rattler (guns), Mud Pump (slows), Rocket Rack (splash, hits air), Arc Coil (chain lightning) and Scorcher (flamethrower that burns groups).</li>
-      <li><b>Waves come 5 seconds apart</b> (faster on 2× and 3×). Press Send now to call one sooner. Keys: 1–5 pick a tower, U upgrade, S sell, N next wave, Space pause.</li>
+      <li><b>Six towers, four levels each:</b> Rattler (guns), Mud Pump (slows), Rocket Rack (splash, hits air), Arc Coil (chain lightning), Scorcher (flamethrower that burns groups) and Thumper (long-range mortar with a huge blast).</li>
+      <li><b>Waves come 5 seconds apart</b> (faster on 2× and 3×). Press Send now to call one sooner. Keys: 1–6 pick a tower, U upgrade, S sell, N next wave, Space pause.</li>
       <li><b>Drag to build a row:</b> pick a tower, then press and slide across the grass to lay a wall in one go.</li>
       <li><b>On a phone</b> the field turns upright so it fills the screen. Add it to your home screen (Share, then Add to Home Screen) to play it like an app.</li>
     </ul>
@@ -197,6 +197,7 @@ const TOWERS=[
  {k:'rocket',name:'Rocket Rack',cost:100,range:4.2,rate:1.6,dmg:36,air:true,ground:true,splash:0.9,desc:'Long-range homing rockets with splash. Hits air.'},
  {k:'arc',name:'Arc Coil',cost:130,range:2.3,rate:1.7,dmg:32,air:false,ground:true,chain:3,desc:'Lightning that jumps between ground raiders.'},
  {k:'flame',name:'Scorcher',cost:120,range:1.9,rate:0.1,dmg:2.2,air:false,ground:true,cone:.55,burn:5,desc:'Short-range flamethrower. Sprays a cone of fire that hits every raider in it and sets them burning. Ground only.'},
+ {k:'mortar',name:'Thumper',cost:150,range:5,minRange:1.3,rate:3,dmg:95,air:false,ground:true,splash:1.1,desc:'Long-range mortar. Lobs heavy shells that blast whole groups, but reloads slowly and cannot hit raiders right next to it. Ground only.'},
 ];
 const ENEMIES={
  trooper:{hp:28,spd:1.15,cash:3,r:8,air:false,gap:.6,w:1,leak:1,name:['Trooper','Troopers']},
@@ -243,9 +244,10 @@ function nz(t,dur,type,f0,f1,peak,dest,q=1){const a=AU.ctx,s=a.createBufferSourc
   const g=a.createGain();env(g,t,.004,peak,dur);s.connect(f);f.connect(g);g.connect(dest||AU.sfxG);s.start(t,Math.random());s.stop(t+dur+.05)}
 function tone(t,dur,type,f0,f1,peak,dest,a0=.005){const a=AU.ctx,o=a.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
   const g=a.createGain();env(g,t,a0,peak,dur);o.connect(g);g.connect(dest||AU.sfxG);o.start(t);o.stop(t+a0+dur+.05)}
-const THR={flame:.16,gun:.05,mud:.12,rocket:.1,boom:.07,zap:.09,pop:.05,build:.05,up:0,sell:0,leak:.2,wave:.5,deny:.3,win:0,lose:0};
+const THR={mortar:.15,flame:.16,gun:.05,mud:.12,rocket:.1,boom:.07,zap:.09,pop:.05,build:.05,up:0,sell:0,leak:.2,wave:.5,deny:.3,win:0,lose:0};
 const SFX={
  gun(t){nz(t,.05,'bandpass',2600,0,.32,null,1.2);tone(t,.04,'square',150,70,.07)},
+ mortar(t){tone(t,.32,'sine',85,38,.55);nz(t,.25,'lowpass',500,120,.35)},
  flame(t){nz(t,.26,'bandpass',700,1400,.16,null,.7);nz(t,.2,'lowpass',300,0,.12)},
  mud(t){nz(t,.14,'lowpass',700,200,.4);tone(t,.12,'sine',220,70,.22)},
  rocket(t){nz(t,.38,'bandpass',600,2600,.22,null,2);tone(t,.3,'sawtooth',90,180,.035)},
@@ -360,7 +362,7 @@ function navTarget(e){const f=e.route==='E'?G.fieldE:G.fieldS;let[c,r]=cellOf(e)
   const n=bestNext(f,i,-1);const nc=n%COLS,nr=(n/COLS)|0;
   return[(nc+.5)*CS+e.ox,(nr+.5)*CS+e.oy,f[i]]}
 function stats(t){const d=TOWERS[t.k],L=t.lvl;return{dmg:d.dmg*Math.pow(1.65,L-1),range:(d.range+.35*(L-1))*CS,rate:d.rate*Math.pow(.86,L-1),
-  slow:d.slow?[.45,.55,.65,.72][L-1]:0,chain:d.chain?d.chain+L-1:0,splash:d.splash?(d.splash+.15*(L-1))*CS:0,cone:d.cone?d.cone+.05*(L-1):0,burn:d.burn?d.burn*Math.pow(1.5,L-1):0}}
+  slow:d.slow?[.45,.55,.65,.72][L-1]:0,chain:d.chain?d.chain+L-1:0,splash:d.splash?(d.splash+.15*(L-1))*CS:0,cone:d.cone?d.cone+.05*(L-1):0,burn:d.burn?d.burn*Math.pow(1.5,L-1):0,minR:d.minRange?d.minRange*CS:0}}
 const upCost=t=>t.lvl>=4?0:Math.round(TOWERS[t.k].cost*[0,.8,1.3,2.4][t.lvl]);
 const sellVal=t=>Math.floor(t.spent*.7);
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -401,11 +403,13 @@ function update(dt){
   for(const t of G.towers){const d=TOWERS[t.k],s=stats(t);t.cd-=dt;t.flash=Math.max(0,t.flash-dt);t.recoil=Math.max(0,(t.recoil||0)-dt*7);
     let tgt=null,best=Infinity;
     for(const e of G.enemies){if(e.dead)continue;if(e.air?!d.air:!d.ground)continue;if(e.x<-4||e.y<-4||e.x>W+4||e.y>H+4)continue;
-      if(Math.hypot(e.x-t.x,e.y-t.y)<=s.range&&e.rem<best){best=e.rem;tgt=e}}
+      const dd=Math.hypot(e.x-t.x,e.y-t.y);if(dd<=s.range&&dd>=s.minR&&e.rem<best){best=e.rem;tgt=e}}
     if(tgt){if(t.k!==3){let da=Math.atan2(tgt.y-t.y,tgt.x-t.x)-t.ang;da=Math.atan2(Math.sin(da),Math.cos(da));t.ang+=Math.sign(da)*Math.min(Math.abs(da),dt*12)}
       if(t.cd<=0){fire(t,tgt,s);t.cd=s.rate}}}
 
-  for(const p of G.proj){if(p.tgt&&!p.tgt.dead){p.tx=p.tgt.x;p.ty=p.tgt.y}
+  for(const p of G.proj){if(p.kind==='shell'){p.t+=dt;const u=Math.min(1,p.t/p.T);p.x=p.sx+(p.tx-p.sx)*u;p.y=p.sy+(p.ty-p.sy)*u;p.z=Math.sin(u*Math.PI)*p.h;
+      if(u>=1){p.done=true;for(const e of G.enemies)if(!e.dead&&!e.air&&Math.hypot(e.x-p.tx,e.y-p.ty)<=p.splash)damage(e,p.dmg);explode(p.tx,p.ty,Math.max(18,p.splash*.6),1.1);for(let k=0;k<8;k++)debris(p.tx,p.ty,2)}continue}
+    if(p.tgt&&!p.tgt.dead){p.tx=p.tgt.x;p.ty=p.tgt.y}
     if(p.kind==='rocket'){p.speed=Math.min(p.speed+16*CS*dt,9*CS);p.smoke-=dt;if(p.smoke<=0){p.smoke=.03;const l=.8;P({kind:'smoke',x:p.x-Math.cos(p.ang)*8,y:p.y-Math.sin(p.ang)*8,life:l,max:l,size:2,grow:10,drag:.9,vy:-4})}}
     const dx=p.tx-p.x,dy=p.ty-p.y,d=Math.hypot(dx,dy),st=p.speed*dt;p.ang=Math.atan2(dy,dx);
     if(d<=st+4){p.done=true;
@@ -436,6 +440,9 @@ function fire(t,e,s){const ca=Math.cos(t.ang),sa=Math.sin(t.ang);t.flash=.06;t.r
     G.proj.push({kind:'rocket',x:bx,y:by,tx:e.x,ty:e.y,tgt:e,speed:2*CS,dmg:s.dmg,splash:s.splash,smoke:0,ang:t.ang});
     G.fx.push({kind:'flash',x:t.x-ca*10,y:t.y-3-sa*10,a:t.ang+Math.PI,s:.8,life:.09,max:.09});
     for(let k=0;k<4;k++)puff(t.x-ca*12,t.y-sa*12,'smoke',.45)}
+  else if(t.k===5){sfx('mortar');const sp=ENEMIES[e.type].spd*CS*(e.slowT>0?e.slowF:1),T=1.1,tx=e.x+Math.cos(e.ang)*sp*T*.85,ty=e.y+Math.sin(e.ang)*sp*T*.85,bx=t.x+ca*14,by=t.y+sa*14;
+    G.proj.push({kind:'shell',x:bx,y:by,sx:bx,sy:by,tx,ty,t:0,T,z:0,h:34+Math.hypot(tx-bx,ty-by)*.22,dmg:s.dmg,splash:s.splash});
+    G.fx.push({kind:'flash',x:bx,y:by,a:t.ang,s:1.2,life:.1,max:.1});for(let k=0;k<6;k++)puff(bx,by,'smoke',.7);G.shake=Math.min(7,(G.shake||0)+1.2)}
   else if(t.k===4){sfx('flame');const L=lift(3),bx=t.x+ca*20+L[0],by=t.y+sa*20+L[1];
     for(const o of G.enemies){if(o.dead||o.air)continue;const dx=o.x-t.x,dy=o.y-t.y,dd=Math.hypot(dx,dy);if(dd>s.range+ENEMIES[o.type].r)continue;
       let da=Math.atan2(dy,dx)-t.ang;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)>s.cone&&dd>16)continue;damage(o,s.dmg,true);o.burnT=2;o.burnD=Math.max(o.burnD||0,s.burn)}
@@ -476,7 +483,7 @@ function baseSpr(k,lvl){return mk(`base${k}_${lvl}`,52,52,g=>{
   box(g,-13,-15,26,25,4,'#868a79','#4f5448');
   g.strokeStyle='rgba(255,255,240,.4)';g.lineWidth=1;g.beginPath();g.moveTo(-16.3,8);g.lineTo(-16.3,-13);g.quadraticCurveTo(-16.3,-18.3,-11,-18.3);g.lineTo(11,-18.3);g.stroke();
   for(const[x,y]of[[-14,-16],[14,-16],[-14,11],[14,11]])ball(g,x,y,1.5,'#ece8d6','#8b8a7c','#34342e');
-  const col=['#d6ab4c','#9a6232','#c4462d','#4fb8cc','#e8782e'][k];g.fillStyle=col;g.fillRect(-12,15.5,24,1.6);
+  const col=['#d6ab4c','#9a6232','#c4462d','#4fb8cc','#e8782e','#a3a86a'][k];g.fillStyle=col;g.fillRect(-12,15.5,24,1.6);
   for(let l=0;l<4;l++){const on=l<lvl,x=-11+l*5.8;if(on){g.fillStyle='rgba(255,205,80,.35)';g.fillRect(x-1,17.5,6,4.5)}g.fillStyle=on?'#ffd257':'#1f211c';g.fillRect(x,18.3,4,2.4)}})}
 function turSpr(k,lvl){return mk(`tur${k}_${lvl}`,60,60,g=>{
   if(k===0){const L=14+lvl*2.5;
@@ -500,13 +507,20 @@ function turSpr(k,lvl){return mk(`tur${k}_${lvl}`,60,60,g=>{
     for(const[r,c]of[[9,'#efe9d9'],[6.4,'#d4ccb9']]){g.lineWidth=2.6;g.strokeStyle=c;g.beginPath();g.arc(0,-1.5,r,0,7);g.stroke();g.lineWidth=.9;g.strokeStyle='rgba(0,0,0,.35)';g.beginPath();g.arc(.4,-.6,r+1.2,.2,2.9);g.stroke()}
     g.strokeStyle='#c87a3a';g.lineWidth=1.3;g.beginPath();for(let a=0;a<12;a+=.25){const r=1.5+a*.3;g.lineTo(Math.cos(a)*r,-3+Math.sin(a)*r)}g.stroke();
     ball(g,0,-4.5,4.2+lvl*.4,'#f6fdff','#9fbac2','#425760')}
-  else{const L=11+lvl*1.6;
+  else if(k===4){const L=11+lvl*1.6;
     for(const y of[-5,5]){box(g,-15,y-3.6,11,7.2,3.6,'#f07a48','#7a2412');g.fillStyle='rgba(255,255,255,.3)';g.fillRect(-13,y-2.6,7,1);ball(g,-15,y,1.8,'#d8d4c4','#77746a','#2e2d28')}
     g.strokeStyle='#33322e';g.lineWidth=1.6;g.beginPath();g.moveTo(-5,-5);g.quadraticCurveTo(0,-7,2,-2);g.moveTo(-5,5);g.quadraticCurveTo(0,7,2,2);g.stroke();
     cyl(g,3,0,L,4.6,'#4b4a44','#c3c0b4','#22211e');g.fillStyle='rgba(0,0,0,.4)';for(let i=0;i<Math.floor(L/3);i++)g.fillRect(6+i*3,-2.9,1,5.8);
     g.fillStyle='#1a1916';g.fillRect(3+L,-3.2,2.6,6.4);
     ball(g,0,0,7.5,'#c2bca8','#6d6a5c','#2b2a24');ball(g,-1.5,-1.5,2.6,'#e0dccb','#8b887a','#3a3832');
-    g.fillStyle='#ffb14a';g.beginPath();g.arc(6.4+L,0,1.4,0,7);g.fill();g.fillStyle='rgba(255,170,60,.35)';g.beginPath();g.arc(6.4+L,0,3,0,7);g.fill()}})}
+    g.fillStyle='#ffb14a';g.beginPath();g.arc(6.4+L,0,1.4,0,7);g.fill();g.fillStyle='rgba(255,170,60,.35)';g.beginPath();g.arc(6.4+L,0,3,0,7);g.fill()}
+  else{const L=10+lvl*1.5;
+    for(const[x,y]of[[-12,-9],[-12,9],[-15,0]]){g.fillStyle='#8f7f58';g.beginPath();g.ellipse(x,y,4.2,3,0,0,7);g.fill();g.strokeStyle='rgba(0,0,0,.3)';g.lineWidth=.8;g.stroke()}
+    box(g,-12,-4,6,8,1,'#6f6a3e','#3c3a20');g.fillStyle='#c9b56a';g.fillRect(-11,-1,4,2);
+    ball(g,0,0,9,'#a9ae8a','#5c624a','#262a1f');
+    cyl(g,0,0,L,9,'#3e4237','#a9ae9a','#1d1f1a');g.fillStyle='#2e3129';g.fillRect(L-1,-5.2,3,10.4);
+    g.fillStyle='#0c0d0b';g.beginPath();g.ellipse(L+1.5,0,1.6,3.6,0,0,7);g.fill();
+    ball(g,-1,0,3.4,'#d0d4bf','#7b8070','#33362e')}})}
 function drawTowerAt(c,k,lvl,x,y,ang,recoil,scale=1,rot=ROT){const up=rot?-Math.PI/2:0,L=rot?[-3,0]:[0,-3];
   blit(c,baseSpr(k,lvl),x,y,up,scale);
   const ts=turSpr(k,lvl),rx=k===3?0:-Math.cos(ang)*recoil*2.6,ry=k===3?0:-Math.sin(ang)*recoil*2.6;
@@ -610,6 +624,8 @@ function drawParts(set){ctx.lineCap='round';for(const p of G.parts){if(!set.has(
 const CLOUDS=[{y:.18,r:170,v:7,o:0},{y:.72,r:210,v:5,o:.45},{y:.46,r:130,v:10,o:.8}];
 function drawClouds(t){ctx.globalAlpha=.2;for(const c of CLOUDS){const span=W+c.r*2,x=((c.o*span+t*c.v)%span)-c.r;blit(ctx,softShadow(),x,c.y*H,0,c.r/30)}ctx.globalAlpha=1}
 function drawProj(p){
+  if(p.kind==='shell'){const u=Math.min(1,p.t/p.T);ctx.strokeStyle=`rgba(255,90,60,${.2+.4*u})`;ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.arc(p.tx,p.ty,p.splash*(1-.3*u),0,7);ctx.stroke();ctx.setLineDash([]);
+    const sc=1-p.z/(p.h*2.2),S=so(p.z*.25,p.z*.3),L=lift(p.z);ctx.globalAlpha=.45*sc;blit(ctx,softShadow(),p.x+S[0],p.y+S[1],0,.2*sc);ctx.globalAlpha=1;ball(ctx,p.x+L[0],p.y+L[1],3.4+p.z/40,'#9a9a90','#4a4a44','#151513');return}
   if(p.kind==='mud'){const d0=p.d0||(p.d0=Math.hypot(p.tx-p.sx,p.ty-p.sy)||1),rem=Math.hypot(p.tx-p.x,p.ty-p.y),u=Math.max(0,Math.min(1,1-rem/d0)),z=Math.sin(u*Math.PI)*12;
     const S=so(2,3),L=lift(z);ctx.globalAlpha=.4;blit(ctx,softShadow(),p.x+S[0],p.y+S[1],0,.15);ctx.globalAlpha=1;ball(ctx,p.x+L[0],p.y+L[1],3.6,'#c29462','#6b4426','#2e1c0e')}
   else{const S=so(5,8);ctx.globalAlpha=.4;blit(ctx,softShadow(),p.x+S[0],p.y+S[1],0,.16);ctx.globalAlpha=1;blit(ctx,rocketSpr(),p.x,p.y,p.ang)}}
@@ -738,7 +754,7 @@ function updateUI(){if(!G)return;
   if(key===infoKey)return;infoKey=key;const info=$('info');
   const next=G.max&&G.wave>=G.max?`<div class="next grow">Last wave on the field. Clear it to win.</div>`:`<div class="next grow">Next wave ${G.wave+1}${G.max?' of '+G.max:''}: ${summarize(G.nextWave)}</div>`;
   if(sel){const d=TOWERS[sel.k],s=stats(sel),uc=upCost(sel);
-    info.innerHTML=`<div class="grow"><h3>${d.name} · Level ${sel.lvl}</h3><div class="stats"><span>Damage <b>${Math.round(s.dmg)}</b></span><span>Range <b>${(s.range/CS).toFixed(1)}</b> tiles</span><span>Rate <b>${(1/s.rate).toFixed(1)}</b>/s</span>${s.slow?`<span>Slow <b>${Math.round(s.slow*100)}%</b></span>`:''}${s.chain?`<span>Jumps <b>${s.chain}</b></span>`:''}${s.burn?`<span>Burn <b>${Math.round(s.burn)}</b>/s</span>`:''}<span>${d.air?'Ground + air':'Ground only'}</span></div></div>
+    info.innerHTML=`<div class="grow"><h3>${d.name} · Level ${sel.lvl}</h3><div class="stats"><span>Damage <b>${Math.round(s.dmg)}</b></span><span>Range <b>${(s.range/CS).toFixed(1)}</b> tiles</span><span>Rate <b>${(1/s.rate).toFixed(1)}</b>/s</span>${s.slow?`<span>Slow <b>${Math.round(s.slow*100)}%</b></span>`:''}${s.chain?`<span>Jumps <b>${s.chain}</b></span>`:''}${s.burn?`<span>Burn <b>${Math.round(s.burn)}</b>/s</span>`:''}${s.minR?`<span>Min range <b>${(s.minR/CS).toFixed(1)}</b></span>`:''}<span>${d.air?'Ground + air':'Ground only'}</span></div></div>
       <div class="acts"><button class="btn primary" id="upBtn" ${sel.lvl>=4||G.cash<uc?'disabled':''}>${sel.lvl>=4?'Max level':'Upgrade $'+uc}</button><button class="btn" id="sellBtn">Sell +$${sellVal(sel)}</button></div>`;
     $('upBtn').onclick=upgrade;$('sellBtn').onclick=sell}
   else if(buildType!==null){const d=TOWERS[buildType];info.innerHTML=`<div class="grow"><h3>${d.name} · $${d.cost}</h3><div class="stats"><span>${d.desc}</span></div></div>${next}`}
@@ -751,7 +767,7 @@ function togglePause(){if(!G||G.over)return;paused=!paused;$('pauseBtn').textCon
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&!G.over&&!paused)togglePause();try{if(AU.ctx){document.hidden?AU.ctx.suspend():AU.ctx.resume()}}catch(e){}});
 $('sfxBtn').onclick=()=>setAudio('sfx',!AU.sfxOn);$('musBtn').onclick=()=>setAudio('music',!AU.musOn);syncAudioBtns();
 document.addEventListener('keydown',ev=>{if(!G||G.over||ev.target.tagName==='TEXTAREA')return;const k=ev.key.toLowerCase();
-  if(k>='1'&&k<='5'){setBuild(buildType===+k-1?null:+k-1)}else if(k==='escape'){setBuild(null);sel=null;infoKey=''}
+  if(k>='1'&&k<='6'){setBuild(buildType===+k-1?null:+k-1)}else if(k==='escape'){setBuild(null);sel=null;infoKey=''}
   else if(k===' '){ev.preventDefault();togglePause()}else if(k==='u')upgrade();else if(k==='s')sell();else if(k==='n')sendWave()});
 
 function bestKey(mode,date,d=diff){return 'meadowsiege:best:'+d+':'+(mode==='daily'?'daily:'+date:mode)}
