@@ -658,7 +658,7 @@ function newGame(mode){lastMode=mode;const dateStr=todayStr();
   setBuild(null);infoKey='';hudCache={};
   $('startScreen').hidden=true;$('overScreen').hidden=true;$('gameUI').hidden=false;$('hud').hidden=false;
   $('modeTag').textContent=mode==='daily'?`Daily Siege · ${dateStr}`:mode==='classic'?'Classic · 100 waves':'Endless';$('prog').hidden=mode==='endless';
-  toast('Build your maze, then start wave 1')}
+}
 function gameOver(won){G.over=true;if(!won)G.lives=0;else G.score+=G.lives*500;
   const k=bestKey(G.mode,G.dateStr),prev=store.get(k);const waves=won?G.wave:Math.max(0,G.wave-1);
   let best=prev;if(!prev||G.score>prev.score){best={score:G.score,wave:waves,won:!!won};store.set(k,best)}
