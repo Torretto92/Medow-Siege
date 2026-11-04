@@ -207,7 +207,7 @@ const ENEMIES={
  crawler:{hp:340,spd:.55,cash:20,r:16,air:false,gap:2,w:7,leak:2,name:['Crawler','Crawlers']},
  blimp:{hp:900,spd:.38,cash:45,r:22,air:true,gap:3,w:20,leak:3,name:['Blimp','Blimps']},
 };
-const BAL={b0:9,b1:2.4,h1:.08,h2:.0027,c1:.02};
+const BAL={b0:9,b1:2.4,h1:.08,h2:.0027,c1:.02,dm:1.15,up:1.9};
 const hpMul=w=>1+BAL.h1*(w-1)+BAL.h2*(w-1)*(w-1);
 const DIFFS={easy:{name:'Easy',lives:30,cash:260,hp:.75,reward:1.15,note:'30 lives, extra cash, weaker raiders'},medium:{name:'Medium',lives:20,cash:200,hp:1,reward:1,note:'20 lives, the standard game'},hard:{name:'Hard',lives:10,cash:160,hp:1.35,reward:.9,note:'10 lives, tougher raiders, less cash'}};
 
@@ -361,7 +361,7 @@ function navTarget(e){const f=e.route==='E'?G.fieldE:G.fieldS;let[c,r]=cellOf(e)
   if(!isFinite(f[i]))return e.route==='E'?[W+CS,e.y,50]:[e.x,H+CS,50];
   const n=bestNext(f,i,-1);const nc=n%COLS,nr=(n/COLS)|0;
   return[(nc+.5)*CS+e.ox,(nr+.5)*CS+e.oy,f[i]]}
-function stats(t){const d=TOWERS[t.k],L=t.lvl;return{dmg:d.dmg*Math.pow(1.65,L-1),range:(d.range+.35*(L-1))*CS,rate:d.rate*Math.pow(.86,L-1),
+function stats(t){const d=TOWERS[t.k],L=t.lvl;return{dmg:d.dmg*BAL.dm*Math.pow(BAL.up,L-1),range:(d.range+.35*(L-1))*CS,rate:d.rate*Math.pow(.86,L-1),
   slow:d.slow?[.45,.55,.65,.72][L-1]:0,chain:d.chain?d.chain+L-1:0,splash:d.splash?(d.splash+.15*(L-1))*CS:0,cone:d.cone?d.cone+.05*(L-1):0,burn:d.burn?d.burn*Math.pow(1.5,L-1):0,minR:d.minRange?d.minRange*CS:0}}
 const upCost=t=>t.lvl>=4?0:Math.round(TOWERS[t.k].cost*[0,.8,1.3,2.4][t.lvl]);
 const sellVal=t=>Math.floor(t.spent*.7);
