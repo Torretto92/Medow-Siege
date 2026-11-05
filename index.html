@@ -170,6 +170,29 @@ button{font-family:var(--ui)}
 .qUp.poor{filter:grayscale(.7) brightness(.8)}.qSpec{border-radius:999px;padding:6px 10px;font-size:12px;white-space:nowrap;color:#fff;background:linear-gradient(180deg,#5aa8ff,#2a62c0)}
 .qSpec.b{background:linear-gradient(180deg,#43d6f0,#1b8aa8)}.qSpec.a{background:linear-gradient(180deg,#c88cff,#7a3ac8)}.qSpec.poor{filter:grayscale(.7) brightness(.8)}
 .qBtn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+.row2{grid-template-columns:repeat(4,minmax(0,1fr))}
+.campBtn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:linear-gradient(180deg,#6a46a0,#3e2468);border:3px solid #12150d;border-radius:12px;color:#fff;padding:9px 14px;cursor:pointer;font:inherit;text-align:left;box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 3px 0 #12150d}
+.campBtn b{font-family:var(--display);font-size:24px;font-weight:400;letter-spacing:.05em;color:#ffd76a}.campBtn span{font-size:13px;font-weight:700;opacity:.92}
+.campList{display:grid;gap:6px;margin-top:8px}.campLvl{display:flex;align-items:center;gap:12px;background:#15180f;border:2px solid #0c0e09;border-radius:10px;padding:8px 12px;color:var(--fg);font:inherit;text-align:left;cursor:pointer}
+.campLvl .n{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#1d1a0e;font-weight:800;flex:none}.campLvl .t{flex:1;display:flex;flex-direction:column;min-width:0}.campLvl small{color:var(--muted)}
+.campLvl .s{color:#ffd24a;letter-spacing:2px;font-weight:700;white-space:nowrap}.campLvl.lock{opacity:.45;cursor:default}.campLvl.lock .n{background:#3a4034;color:var(--muted)}.campLvl:not(.lock):hover{border-color:var(--accent)}
+.cbRow{margin-top:6px;font-size:13px;color:#8fd8ff}.cbRow b{color:#bfe8ff}
+.abil{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex:1 1 100%}
+.abBtn{position:relative;overflow:hidden;display:flex;align-items:center;gap:8px;background:var(--panel);border:2px solid var(--line);border-radius:8px;padding:6px 10px;color:var(--fg);font:inherit;cursor:pointer;text-align:left;min-width:0}
+.abBtn svg{width:24px;height:24px;flex:none;color:#8fd0ff;position:relative;z-index:1}.abBtn .abT{display:flex;flex-direction:column;min-width:0;position:relative;z-index:1}.abBtn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abBtn small{color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}.abBtn.ready{border-color:#5aa8ff}.abBtn.ready small{color:#8fd0ff}.abBtn.aiming{border-color:#ff7a5a;background:#3a2018}
+.abCd{position:absolute;left:0;right:0;bottom:0;height:0;background:rgba(0,0,0,.38);pointer-events:none}
+.modalCard.wide{width:min(980px,100%)}
+.edTop{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}#edName{flex:1 1 180px;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:8px 10px;font:inherit}
+#edTheme{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:8px;font:inherit}.edChk{display:flex;gap:6px;align-items:center;font-weight:700}.edChk input{width:20px;height:20px;accent-color:var(--accent)}
+.edHint{color:var(--muted);font-size:14px;margin:4px 0}.edHint b{color:var(--fg)}.edMsg{min-height:20px;margin:6px 0;font-weight:700}.edBtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.edBtns .grow{flex:1}
+#edCv{touch-action:none;cursor:crosshair}.cmList{display:grid;gap:6px;margin-top:8px}.cmItem{display:flex;gap:8px;align-items:center;background:#15180f;border:1px solid #0c0e09;border-radius:8px;padding:6px 10px}.cmItem b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#editBtn{align-self:center}
+@keyframes titleIn{from{transform:translateY(-26px) scale(1.12);opacity:0}to{transform:none;opacity:1}}
+.boardTitle{animation:titleIn .7s cubic-bezier(.2,1.4,.4,1) both}
+@media (prefers-reduced-motion:reduce){.boardTitle{animation:none}}
+@media (max-width:560px){.row2{grid-template-columns:repeat(2,minmax(0,1fr))}.abBtn{padding:5px 6px;gap:5px}.abBtn svg{width:20px;height:20px}.abBtn b{font-size:13px}}
 /* tutorial */
 .tut{position:fixed;inset:0;z-index:50}
 .spot{position:fixed;left:50%;top:50%;width:0;height:0;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,6,.72),0 0 0 3px var(--accent),0 0 26px rgba(233,178,60,.6);transition:left .25s,top .25s,width .25s,height .25s;pointer-events:none}
@@ -205,10 +228,12 @@ button{font-family:var(--ui)}
         <div class="mapPick"><button class="arrowBtn" id="mapPrevBtn" aria-label="Previous map">‹</button><div class="plate" id="mapName">The Meadow</div><button class="arrowBtn" id="mapNextBtn" aria-label="Next map">›</button></div>
         <div class="preview"><canvas id="mapPrev" width="936" height="576" aria-label="Map preview showing where raiders enter and leave"></canvas></div>
         <div class="mapStars" id="mapStars"></div>
+        <button class="ghostBtn" id="editBtn">Make your own map</button>
         <div class="plate small">Briefing</div>
         <p id="briefing"></p>
       </div>
       <div class="col">
+        <button class="campBtn" id="campBtn"><b>Campaign</b><span></span></button>
         <div class="plate small">Mode</div>
         <div class="modeList" id="modeList" role="radiogroup" aria-label="Game mode"></div>
         <div class="plate small">Difficulty</div>
@@ -217,7 +242,7 @@ button{font-family:var(--ui)}
         <div id="modeBest"></div>
         <button class="contBtn" id="contBtn" hidden></button>
         <button class="startBtn" id="startBtn">START</button>
-        <div class="row2"><button class="ghostBtn" id="howBtn">How to play</button><button class="ghostBtn" id="achBtn">Achievements</button><button class="ghostBtn" id="setBtn2">Settings</button></div>
+        <div class="row2"><button class="ghostBtn" id="howBtn">How to play</button><button class="ghostBtn" id="achBtn">Achievements</button><button class="ghostBtn" id="perkBtn">Perks</button><button class="ghostBtn" id="setBtn2">Settings</button></div>
       </div>
     </div>
   </section>
@@ -254,11 +279,14 @@ button{font-family:var(--ui)}
     </div>
     <div style="height:10px"></div>
     <div class="bar">
+      <div class="abil" id="abil" hidden></div>
       <div class="palette" id="palette"></div>
       <div class="controls">
         <button class="btn primary" id="waveBtn">Start wave 1</button>
         <button class="btn" id="speedBtn" title="Game speed">1×</button>
         <button class="btn" id="pauseBtn">Pause</button>
+        <button class="btn" id="undoBtn" title="Undo (Z)" disabled>Undo</button>
+        <button class="btn" id="autoBtn" aria-pressed="true">Auto-start on</button>
         <button class="btn" id="setBtn">Settings</button>
         <button class="btn" id="helpBtn">Help</button>
       </div>
@@ -313,7 +341,7 @@ const ENEMIES={
 };
 const BAL={b0:9,b1:2.4,h1:.08,h2:.0027,c1:.02,dm:1.15,up:1.9};
 const hpMul=w=>1+BAL.h1*(w-1)+BAL.h2*(w-1)*(w-1);
-const DIFFS={easy:{name:'Easy',lives:30,cash:260,hp:.75,reward:1.15,note:'30 lives, extra cash, weaker raiders'},medium:{name:'Medium',lives:20,cash:200,hp:1,reward:1,note:'20 lives, the standard game'},hard:{name:'Hard',lives:10,cash:160,hp:1.35,reward:.9,note:'10 lives, tougher raiders, less cash'}};
+const DIFFS={easy:{name:'Easy',lives:30,cash:260,hp:.75,reward:1.15,note:'30 lives, extra cash, weaker raiders'},medium:{name:'Medium',lives:20,cash:200,hp:1,reward:1,note:'20 lives, the standard game'},hard:{name:'Hard',lives:10,cash:160,hp:1.75,late:1.3,reward:.9,note:'10 lives, tougher raiders, less cash'}};
 const MAPS={
  meadow:{name:'The Meadow',theme:'meadow',S:false,rocks:[],brief:'An open meadow with nothing in your way. Every wall is yours to build.'},
  crossroads:{name:'Crossroads',theme:'cross',S:true,rocks:[],brief:'Raiders attack from two gates at once, from the left and from the north. One maze has to slow both columns.'},
@@ -370,7 +398,7 @@ function layout(){const p=window.innerHeight>window.innerWidth&&window.innerWidt
 window.addEventListener('resize',layout);
 
 // ---------- sound (all synthesised, no audio files) ----------
-const SET=Object.assign({sfx:.55,mus:.15,cb:false},store.get('meadowsiege:settings')||{});
+const SET=Object.assign({sfx:.55,mus:.15,cb:false,vib:true,auto:true},store.get('meadowsiege:settings')||{});
 const AU={ctx:null,out:null,sfxG:null,musG:null,noise:null,last:{},sfxOn:SET.sfx>0,musOn:SET.mus>0,mus:null};
 function audioInit(){try{
   if(!AU.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const a=new C();AU.ctx=a;
@@ -385,9 +413,10 @@ function nz(t,dur,type,f0,f1,peak,dest,q=1){const a=AU.ctx,s=a.createBufferSourc
   const g=a.createGain();env(g,t,.004,peak,dur);s.connect(f);f.connect(g);g.connect(dest||AU.sfxG);s.start(t,Math.random());s.stop(t+dur+.05)}
 function tone(t,dur,type,f0,f1,peak,dest,a0=.005){const a=AU.ctx,o=a.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
   const g=a.createGain();env(g,t,a0,peak,dur);o.connect(g);g.connect(dest||AU.sfxG);o.start(t);o.stop(t+a0+dur+.05)}
-const THR={mortar:.15,flame:.16,gun:.05,mud:.12,rocket:.1,boom:.07,zap:.09,pop:.05,build:.05,up:0,sell:0,leak:.2,wave:.5,deny:.3,win:0,lose:0};
+const THR={freeze:0,mortar:.15,flame:.16,gun:.05,mud:.12,rocket:.1,boom:.07,zap:.09,pop:.05,build:.05,up:0,sell:0,leak:.2,wave:.5,deny:.3,win:0,lose:0};
 const SFX={
  gun(t){nz(t,.05,'bandpass',2600,0,.32,null,1.2);tone(t,.04,'square',150,70,.07)},
+ freeze(t){[1568,2093,2637].forEach((f,k)=>tone(t+k*.04,.4,'triangle',f,f*1.5,.08))},
  mortar(t){tone(t,.32,'sine',85,38,.55);nz(t,.25,'lowpass',500,120,.35)},
  flame(t){nz(t,.26,'bandpass',700,1400,.16,null,.7);nz(t,.2,'lowpass',300,0,.12)},
  mud(t){nz(t,.14,'lowpass',700,200,.4);tone(t,.12,'sine',220,70,.22)},
@@ -406,19 +435,72 @@ const SFX={
  win(t){[523,659,784,1047,1319].forEach((f,k)=>tone(t+k*.12,.4,'triangle',f,0,.2))},
  lose(t){[392,330,262,196].forEach((f,k)=>tone(t+k*.18,.45,'triangle',f,0,.2))}};
 function sfx(n,arg){if(!AU.ctx||!AU.sfxOn||AU.ctx.state!=='running')return;const t=AU.ctx.currentTime,th=THR[n]||0;if(AU.last[n]!=null&&t-AU.last[n]<th)return;AU.last[n]=t;try{SFX[n](t+.005,arg)}catch(e){}}
-function startMusic(){const a=AU.ctx,bpm=104,spb=60/bpm/4,m=n=>440*Math.pow(2,(n-69)/12);let step=0,next=a.currentTime+.1;
-  const prog=[[50,57,62,65],[46,53,58,62],[53,60,65,69],[48,55,60,64]],snare=[1,0,0,1,1,0,1,0,1,0,0,1,1,1,1,0],lead=[62,65,67,69,72,69,67,65];
+const MUS={meadow:{bpm:104,prog:[[50,57,62,65],[46,53,58,62],[53,60,65,69],[48,55,60,64]],lead:[62,65,67,69,72,69,67,65],lw:'square'},
+ cross:{bpm:116,prog:[[45,52,57,60],[41,48,53,57],[48,55,60,64],[43,50,55,59]],lead:[69,72,74,76,79,76,74,72],lw:'square'},
+ canyon:{bpm:94,prog:[[40,47,52,55],[36,43,48,52],[38,45,50,54],[40,47,52,55]],lead:[64,65,67,71,72,71,67,65],lw:'sawtooth'},
+ snow:{bpm:84,prog:[[48,55,60,64],[45,52,57,60],[41,48,53,57],[43,50,55,59]],lead:[76,79,81,84,86,84,81,79],lw:'triangle'}};
+function startMusic(){const a=AU.ctx,m=n=>440*Math.pow(2,(n-69)/12),snare=[1,0,0,1,1,0,1,0,1,0,0,1,1,1,1,0];let step=0,next=a.currentTime+.1;
   AU.mus=setInterval(()=>{if(!AU.musOn||a.state!=='running')return;if(next<a.currentTime)next=a.currentTime+.05;
-    while(next<a.currentTime+.3){const s=step%16,bar=Math.floor(step/16)%4,ch=prog[bar];
-      if(s%4===0)tone(next,.16,'sine',120,42,.5,AU.musG);
-      if(snare[s])nz(next,s%4===0?.09:.05,'bandpass',1900,0,s%4===0?.2:.1,AU.musG,.8);
+    const cf=MUS[(MAP&&MAP.theme)||'meadow']||MUS.meadow,boss=!!(G&&!G.over&&G.enemies.some(e=>!e.dead&&ENEMIES[e.type].boss)),spb=60/(cf.bpm*(boss?1.12:1))/4;
+    while(next<a.currentTime+.3){const s=step%16,bar=Math.floor(step/16)%4,ch=cf.prog[bar];
+      if(s%4===0||(boss&&s%4===2))tone(next,.16,'sine',120,42,.5,AU.musG);
+      if(snare[s]||(boss&&s%2===1))nz(next,s%4===0?.09:.05,'bandpass',1900,0,s%4===0?.2:.1,AU.musG,.8);
       if(s%2===0)tone(next,spb*1.7,'triangle',m(ch[0]-12+(s%8===4?7:0)),0,.26,AU.musG,.01);
+      if(boss&&s%2===1)tone(next,spb*.9,'square',m(ch[0]),0,.04,AU.musG,.005);
       if(s===0)ch.slice(1).forEach(n=>tone(next,spb*15,'sine',m(n),0,.045,AU.musG,.3));
-      if(Math.floor(step/32)%2===1&&s%4===2)tone(next,spb*1.5,'square',m(lead[(s/2+bar*2)%8|0]),0,.025,AU.musG,.01);
+      if((boss||Math.floor(step/32)%2===1)&&s%4===2)tone(next,spb*1.5,cf.lw,m(cf.lead[(s/2+bar*2)%8|0]),0,cf.lw==='sawtooth'?.016:cf.lw==='triangle'?.05:.025,AU.musG,.01);
       next+=spb;step++}},80)}
 function applyAudio(){AU.sfxOn=SET.sfx>0;AU.musOn=SET.mus>0;if(AU.sfxG)AU.sfxG.gain.value=SET.sfx;if(AU.musG)AU.musG.gain.value=SET.mus}
 document.addEventListener('pointerdown',audioInit,{passive:true});document.addEventListener('keydown',audioInit);
 
+const BUILTIN=['meadow','crossroads','canyon','frost'];
+MODES.campaign={name:'Campaign',max:0,sub:'',brief:''};
+ACH.push(['camp','War Hero','Finish the campaign.'],['ability','Called It In','Use a special ability.'],['combo','Better Together','Build a tower combo.'],['editor','Cartographer','Save a map you made yourself.']);
+const COMBOS=[
+ {a:3,b:1,n:'Electrified Mud',d:'Arc Coil next to a Mud Pump: lightning also stuns for a moment.',fx:{3:{stun:.3}}},
+ {a:2,b:4,n:'Fire Rockets',d:'Rocket Rack next to a Scorcher: rockets set ground raiders burning.',fx:{2:{burnHit:14}}},
+ {a:0,b:0,n:'Crossfire',d:'Two Rattlers side by side: +12% damage.',fx:{0:{dmg:1.12}}},
+ {a:5,b:1,n:'Sticky Shells',d:'Thumper next to a Mud Pump: shells slow everything they hit.',fx:{5:{shellSlow:.4}}},
+ {a:4,b:3,n:'Plasma Flames',d:'Scorcher next to an Arc Coil: +25% flame damage.',fx:{4:{dmg:1.25}}},
+ {a:2,b:0,n:'Spotter',d:'Rocket Rack next to a Rattler: +15% rocket range.',fx:{2:{range:1.15}}}];
+const WEATHER={rain:{n:'Rain',s:'flames weaker, mud lasts longer'},fog:{n:'Fog',s:'tower range -20%'},gold:{n:'Gold Rush',s:'double cash'}};
+const ABIL=[{k:'strike',n:'Airstrike',key:'Q',cd:45,d:'Bombs a whole column of the field. Tap it, then tap where to strike.'},
+ {k:'freeze',n:'Freeze',key:'W',cd:60,d:'Freezes every raider in place for 3 seconds.'},
+ {k:'cash',n:'Cash Drop',key:'E',cd:90,d:'An emergency supply drop of cash.'}];
+const ABICON={strike:'<path d="M12 2l2 7 7 3v2l-7-1-1 5 3 2v1l-4-1-4 1v-1l3-2-1-5-7 1v-2l7-3z" fill="currentColor"/>',
+ freeze:'<path d="M11 2h2v20h-2zM2 11h20v2H2zM4.9 6.3l1.4-1.4 12.8 12.8-1.4 1.4zM17.7 4.9l1.4 1.4L6.3 19.1l-1.4-1.4z" fill="currentColor"/>',
+ cash:'<circle cx="12" cy="12" r="9.5" fill="currentColor"/><path d="M12.8 6.5v1.2c1.4.2 2.4 1 2.6 2.3h-1.7c-.1-.6-.7-1-1.6-1-1 0-1.6.4-1.6 1 0 .5.4.8 1.7 1.1 2 .4 3.4 1 3.4 2.8 0 1.3-1 2.3-2.8 2.5v1.1h-1.4v-1.1c-1.6-.2-2.7-1.1-2.8-2.6h1.7c.1.8.8 1.2 1.8 1.2 1.1 0 1.7-.4 1.7-1.1 0-.6-.5-.9-1.9-1.2-1.9-.4-3.2-1-3.2-2.7 0-1.2 1-2.2 2.6-2.4V6.5z" fill="#1a2317"/>'};
+const CAMP=[
+ {map:'meadow',n:'First Contact',waves:15,towers:[0,1],ab:[],b:'Raiders are probing the meadow. Rattlers and Mud Pumps are all you have. Build a simple maze and hold for 15 waves.'},
+ {map:'meadow',n:'Rockets Arrive',waves:20,towers:[0,1,2],ab:['cash'],b:'Flying gyros are on the way. Rocket Racks join your armoury, and HQ can now airdrop emergency cash.'},
+ {map:'crossroads',n:'Two Fronts',waves:25,towers:[0,1,2,3],ab:['cash','freeze'],b:'Raiders now attack from the north gate too. Arc Coils and the Freeze ability are unlocked.'},
+ {map:'crossroads',n:'Hold the Junction',waves:30,towers:[0,1,2,3,4],ab:['cash','freeze'],b:'The Scorcher flamethrower arrives. Shield troopers have been spotted, so keep an Arc Coil handy.'},
+ {map:'canyon',n:'Into the Canyon',waves:30,towers:'all',ab:'all',b:'Use the canyon rocks as free walls. The Thumper mortar and Airstrikes are now yours.'},
+ {map:'canyon',n:'Rockfall',waves:40,towers:'all',ab:'all',b:'Medics and splitters join the raiders, and a Juggernaut leads the charge.'},
+ {map:'frost',n:'Thin Ice',waves:40,towers:'all',ab:'all',b:'Raiders slide fast on the ice. Lean on Mud Pumps, which freeze raiders solid here.'},
+ {map:'frost',n:'The Last Fence',waves:50,towers:'all',ab:'all',b:'The final push. Hold Frostfield for 50 waves and the war is won.'}];
+const campTowers=i=>CAMP[i].towers==='all'?[0,1,2,3,4,5]:CAMP[i].towers.slice();
+const campAb=i=>CAMP[i].ab==='all'?['strike','freeze','cash']:CAMP[i].ab.slice();
+const PERKS=[{id:'cash',n:'Deep Pockets',d:'+10% starting cash per rank.',costs:[2,3,4]},{id:'life',n:'Thick Fence',d:'+2 lives per rank (not in Sudden Death).',costs:[3,5]},
+ {id:'mud',n:'Bargain Mud',d:'Mud Pumps cost 20% less.',costs:[3]},{id:'quick',n:'Quick Hands',d:'Abilities recharge 15% faster per rank.',costs:[3,4]},
+ {id:'eng',n:'Field Engineer',d:'Selling a tower refunds 80% instead of 70%.',costs:[3]},{id:'scout',n:'War Chest',d:'Start every game with $50 extra.',costs:[2]}];
+let PK=store.get('meadowsiege:perks')||{},lastLevel=0;
+function perk(id){return PK[id]||0}
+const costOf=k=>Math.round(TOWERS[k].cost*(k===1&&perk('mud')?.8:1));
+function campProg(){return store.get('meadowsiege:camp')||{}}
+function campUnlocked(){const p=campProg();let i=0;while(i<CAMP.length&&p[i])i++;return i}
+function loadCustom(){const L=store.get('meadowsiege:custom')||[];for(const m of L){const id='c_'+m.id;MAPS[id]={name:m.name,theme:THEMES[m.theme]?m.theme:'meadow',S:!!m.S,rocks:m.rocks||[],brief:'A map you designed yourself.',custom:true};if(!MAPORDER.includes(id))MAPORDER.push(id)}
+  for(let i=MAPORDER.length-1;i>=0;i--)if(!MAPS[MAPORDER[i]])MAPORDER.splice(i,1)}
+loadCustom();
+function weatherFor(w){if(w<8||!G||G.mode==='trial')return null;const r=mulberry32((G.seed^Math.imul(w,0x9E3779B1)^0x5151)>>>0)();return r<.08?'rain':r<.16?'fog':r<.23?'gold':null}
+let lastBuzz=0;function buzz(ms){if(!SET.vib)return;const n=performance.now();if(n-lastBuzz<150)return;lastBuzz=n;try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
+function computeCombos(){if(!G)return;let any=false;for(const t of G.towers){t.cbs=[];t.cbp=[];const c=t.i%COLS,r=(t.i/COLS)|0,nb=[];
+  for(let dc=-1;dc<=1;dc++)for(let dr=-1;dr<=1;dr++){if(!dc&&!dr)continue;const cc=c+dc,rr=r+dr;if(cc<0||rr<0||cc>=COLS||rr>=ROWS)continue;const o=G.towerAt[idx(cc,rr)];if(o)nb.push(o)}
+  COMBOS.forEach((cb,ci)=>{if(!cb.fx[t.k]||(cb.a!==t.k&&cb.b!==t.k))return;const want=cb.a===t.k?cb.b:cb.a,o=nb.find(o=>o.k===want);if(o){t.cbs.push(ci);t.cbp.push(o);any=true}})}
+  if(any)unlock('combo')}
+function applyMods(t,s){for(const c of t.cbs||[]){const f=COMBOS[c].fx[t.k];if(!f)continue;if(f.dmg)s.dmg*=f.dmg;if(f.range)s.range*=f.range;if(f.stun)s.stun=Math.max(s.stun,f.stun);
+    if(f.burnHit)s.burnHit=f.burnHit*BAL.dm*Math.pow(1.45,t.lvl-1);if(f.shellSlow)s.shellSlow=f.shellSlow}
+  if(G&&G.weather==='fog')s.range*=.8;if(G&&G.weather==='rain'){if(t.k===4)s.dmg*=.6;if(t.k===1)s.slowT*=1.3}}
 // ---------- grid & pathing ----------
 function blocked(i,extra){return G.rock[i]||G.towerAt[i]||i===extra}
 function computeField(goals,extra){
@@ -485,14 +567,14 @@ function genWave(w){
 function summarize(list){const m={};list.forEach(s=>m[s.type]=(m[s.type]||0)+1);
   return Object.entries(m).map(([t,n])=>`<b>${n}</b> ${ENEMIES[t].name[n>1?1:0]}${ENEMIES[t].air?' (air)':''}`).join(' · ')}
 function launchWave(bonus){
-  G.st.lives.push(Math.max(0,G.lives));G.wave++;if(G.wave>10)unlock('first');if(G.wave>=50)unlock('half');if(G.wave>=150&&(G.mode==='endless'||G.playOn))unlock('endure');G.queue=G.nextWave.slice();G.spawnT=0;G.counting=false;G.score+=G.wave*20;
-  sfx('wave');G.nextWave=genWave(G.wave+1);G.banner={txt:G.max&&G.wave===G.max?'FINAL WAVE':`WAVE ${G.wave}`,sub:G.max?`${G.wave} of ${G.max}`:(G.playOn?'Bonus wave':'Endless'),life:2.2};infoKey=''}
+  G.st.lives.push(Math.max(0,G.lives));G.wave++;G.weather=weatherFor(G.wave);if(G.wave>10)unlock('first');if(G.wave>=50)unlock('half');if(G.wave>=150&&(G.mode==='endless'||G.playOn))unlock('endure');G.queue=G.nextWave.slice();G.spawnT=0;G.counting=false;G.score+=G.wave*20;
+  sfx('wave');G.nextWave=genWave(G.wave+1);G.banner={txt:G.max&&G.wave===G.max?'FINAL WAVE':`WAVE ${G.wave}`,sub:G.max?`${G.wave} of ${G.max}`:(G.playOn?'Bonus wave':'Endless'),life:2.2};if(G.weather)G.banner.sub+=' · '+WEATHER[G.weather].n;infoKey='';G.undo=[];for(const t of G.towers)t.fresh=false}
 
 // ---------- entities ----------
-function spawnEnemy(s){const d=ENEMIES[s.type],D=DIFFS[G.diff],dh=D.hp>1?1+(D.hp-1)*Math.min(1,s.w/25):D.hp,hp=Math.round(d.hp*hpMul(s.w)*dh);let x,y,tx=0,ty=0;
+function spawnEnemy(s){const d=ENEMIES[s.type],D=DIFFS[G.diff],dh=(D.hp>1?1+(D.hp-1)*Math.min(1,s.w/45):D.hp)+(D.late||0)*s.w/100,hp=Math.round(d.hp*hpMul(s.w)*dh);let x,y,tx=0,ty=0;
   if(s.route==='E'){x=-CS*.6;y=(LANE_E[s.lane]+.5)*CS;tx=W+CS;ty=(LANE_E[(s.lane+1)%3]+.5)*CS}
   else{x=(LANE_S[s.lane]+.5)*CS;y=-CS*.6;tx=(LANE_S[(s.lane+2)%3]+.5)*CS;ty=H+CS}
-  if(s.x!=null){x=s.x;y=s.y}const shv=d.sh?Math.round(d.sh*hpMul(s.w)*dh):0;
+  if(d.boss&&s.x==null){buzz(220);G.banner={txt:'JUGGERNAUT',sub:'A boss is coming',life:2}}if(s.x!=null){x=s.x;y=s.y}const shv=d.sh?Math.round(d.sh*hpMul(s.w)*dh):0;
   G.enemies.push({id:++uid,type:s.type,route:s.route,air:d.air,x,y,tx,ty,hp,max:hp,w:s.w,sh:shv,shMax:shv,stunT:0,slowT:0,slowF:1,ang:s.route==='E'?0:Math.PI/2,
     ox:(Math.random()-.5)*12,oy:(Math.random()-.5)*12,cash:Math.max(1,Math.round(d.cash*(1+BAL.c1*(s.w-1))*D.reward)),dead:false,rem:999,hit:0,ph:Math.random()*6})}
 function navTarget(e){const f=e.route==='E'?G.fieldE:G.fieldS;let[c,r]=cellOf(e);
@@ -504,11 +586,11 @@ function navTarget(e){const f=e.route==='E'?G.fieldE:G.fieldS;let[c,r]=cellOf(e)
   if(!isFinite(f[i]))return e.route==='E'?[W+CS,e.y,50]:[e.x,H+CS,50];
   const n=bestNext(f,i,-1);const nc=n%COLS,nr=(n/COLS)|0;
   return[(nc+.5)*CS+e.ox,(nr+.5)*CS+e.oy,f[i]]}
-function stats(t){const s=baseStats(t);s.multi=1;s.stun=0;s.cluster=0;s.slowT=1;if(t.spec){const m=SPEC[t.k][t.spec==='a'?0:1].m;for(const k of['dmg','range','rate','splash','cone','burn'])if(m[k]&&s[k])s[k]*=m[k];if(m.slow)s.slow+=m.slow;if(m.chain)s.chain+=m.chain;if(m.addBurn)s.burn=m.addBurn;if(m.multi)s.multi=m.multi;if(m.stun)s.stun=m.stun;if(m.cluster)s.cluster=m.cluster;if(m.slowT)s.slowT=m.slowT}return s}
+function stats(t){const s=baseStats(t);s.multi=1;s.stun=0;s.cluster=0;s.slowT=1;if(t.spec){const m=SPEC[t.k][t.spec==='a'?0:1].m;for(const k of['dmg','range','rate','splash','cone','burn'])if(m[k]&&s[k])s[k]*=m[k];if(m.slow)s.slow+=m.slow;if(m.chain)s.chain+=m.chain;if(m.addBurn)s.burn=m.addBurn;if(m.multi)s.multi=m.multi;if(m.stun)s.stun=m.stun;if(m.cluster)s.cluster=m.cluster;if(m.slowT)s.slowT=m.slowT}applyMods(t,s);return s}
 function baseStats(t){const d=TOWERS[t.k],L=t.lvl;return{dmg:d.dmg*BAL.dm*Math.pow(BAL.up,L-1),range:(d.range+.35*(L-1))*CS,rate:d.rate*Math.pow(.86,L-1),
   slow:d.slow?[.45,.55,.65,.72][L-1]:0,chain:d.chain?d.chain+L-1:0,splash:d.splash?(d.splash+.15*(L-1))*CS:0,cone:d.cone?d.cone+.05*(L-1):0,burn:d.burn?d.burn*Math.pow(1.5,L-1):0,minR:d.minRange?d.minRange*CS:0}}
 const upCost=t=>t.lvl>=4?0:Math.round(TOWERS[t.k].cost*[0,.8,1.3,2.4][t.lvl]);
-const sellVal=t=>Math.floor(t.spent*.7);
+const sellVal=t=>t.fresh?t.spent:Math.floor(t.spent*(perk('eng')?.8:.7));
 const rand=(a,b)=>a+Math.random()*(b-a);
 const RM=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
 function P(o){G.parts.push(Object.assign({kind:'dust',x:0,y:0,z:0,vx:0,vy:0,vz:0,life:1,max:1,size:3,grow:0,g:0,drag:.9,rot:0,vr:0},o))}
@@ -525,8 +607,8 @@ function debris(x,y,z0){const a=rand(0,6.28),v=rand(40,130),l=rand(.7,1.2);
 let DSRC=0;
 function damage(e,d,q){if(e.dead)return;
   if(e.sh>0){const m=DSRC===3?2:1,ab=Math.min(e.sh,d*m);e.sh-=ab;d-=ab/m;if(e.sh<=0){e.sh=0;G.fx.push({kind:'ring',x:e.x,y:e.y,r:20,life:.3,max:.3});sfx('pop')}if(d<=1e-6){if(!q)e.hit=.07;return}}
-  G.st.dmg[DSRC]+=Math.min(d,Math.max(0,e.hp));e.hp-=d;if(!q)e.hit=.07;
-  if(e.hp<=0){e.dead=true;G.cash+=e.cash;G.score+=e.cash*10;G.kills++;G.st.kills[DSRC]++;if(DSRC===4&&G.st.kills[4]>=300)unlock('pyro');if(ENEMIES[e.type].boss){unlock('boss');G.banner={txt:'BOSS DOWN',sub:`+$${e.cash}`,life:1.8}}
+  if(DSRC>=0)G.st.dmg[DSRC]+=Math.min(d,Math.max(0,e.hp));e.hp-=d;if(!q)e.hit=.07;
+  if(e.hp<=0){e.dead=true;G.cash+=e.cash*(G.weather==='gold'?2:1);G.score+=e.cash*10;G.kills++;if(DSRC>=0)G.st.kills[DSRC]++;if(DSRC===4&&G.st.kills[4]>=300)unlock('pyro');if(ENEMIES[e.type].boss){unlock('boss');buzz(120);G.banner={txt:'BOSS DOWN',sub:`+$${e.cash}`,life:1.8}}
     if(e.type==='splitter'){const ds=DSRC;for(let k=0;k<2;k++)spawnEnemy({type:'splitling',w:e.w||1,lane:1,route:e.route,gap:0,x:e.x+rand(-8,8),y:e.y+rand(-8,8)});DSRC=ds}
     deathFx(e);floatText(e.x,e.y-14,`+$${e.cash}`,'#ffe08a')}}
 function deathFx(e){const R=ENEMIES[e.type].r;
@@ -539,16 +621,19 @@ function update(dt){
   G.time+=dt;
   if(G.queue.length){G.spawnT-=dt;while(G.queue.length&&G.spawnT<=0){const s=G.queue.shift();spawnEnemy(s);G.spawnT+=s.gap}}
   if(G.banner)G.banner.life-=dt;
-  if(!G.counting&&!G.queue.length){const alive=G.enemies.some(e=>!e.dead);if(G.max&&G.wave>=G.max){if(!alive&&!G.over&&!G.choice&&G.lives>0){winChoice();return}}else if(!alive){G.counting=true;G.countdown=WAVE_GAP;snap()}else if(G.trial&&G.wave>0){G.counting=true;G.countdown=3}}
-  if(G.counting&&G.wave>0){G.countdown-=dt;if(G.countdown<=0)launchWave(0)}
+  if(!G.counting&&!G.queue.length){const alive=G.enemies.some(e=>!e.dead);if(G.max&&G.wave>=G.max){if(!alive&&!G.over&&!G.choice&&G.lives>0){winChoice();return}}else if(!alive){G.counting=true;G.countdown=WAVE_GAP;G.weather=null;snap()}else if(G.trial&&G.wave>0){G.counting=true;G.countdown=3}}
+  if(G.counting&&G.wave>0&&(SET.auto||G.trial)){G.countdown-=dt;if(G.countdown<=0)launchWave(0)}
+  for(const a in G.ab)if(G.ab[a]>0)G.ab[a]=Math.max(0,G.ab[a]-dt*(1+.15*perk('quick')));G.flashB=Math.max(0,(G.flashB||0)-dt);
+  if(G.strikes.length){for(const st of G.strikes){st.t-=dt;if(st.t<=0&&!st.done){st.done=1;const dmg=55*hpMul(Math.max(1,G.wave));DSRC=-1;for(const e of G.enemies)if(!e.dead&&Math.abs(e.x-st.x)<1.15*CS&&Math.abs(e.y-st.y)<.75*CS)damage(e,dmg);explode(st.x+rand(-8,8),st.y,16,.4)}}G.strikes=G.strikes.filter(x=>!x.done)}
+  if(G.jet){G.jet.t+=dt;if(G.jet.t>1.4)G.jet=null}
 
   for(const e of G.enemies){if(e.dead)continue;e.hit=Math.max(0,e.hit-dt);if(e.burnT>0){e.burnT-=dt;DSRC=e.burnSrc??4;damage(e,e.burnD*dt,true);if(e.dead)continue;if(e.burnT<=0)e.burnD=0}if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slowF=1}
-    if(e.stunT>0)e.stunT-=dt;if(e.type==='medic'){e.healT=(e.healT||0)-dt;if(e.healT<=0){e.healT=.6;let h=0;for(const o of G.enemies)if(!o.dead&&!o.air&&o!==e&&o.hp<o.max&&Math.hypot(o.x-e.x,o.y-e.y)<1.7*CS){o.hp=Math.min(o.max,o.hp+o.max*.05);h=1}if(h)G.fx.push({kind:'heal',x:e.x,y:e.y,r:1.7*CS,life:.5,max:.5})}}
+    if(e.stunT>0)e.stunT-=dt;else e.frozen=0;if(e.type==='medic'){e.healT=(e.healT||0)-dt;if(e.healT<=0){e.healT=.6;let h=0;for(const o of G.enemies)if(!o.dead&&!o.air&&o!==e&&o.hp<o.max&&Math.hypot(o.x-e.x,o.y-e.y)<1.7*CS){o.hp=Math.min(o.max,o.hp+o.max*.05);h=1}if(h)G.fx.push({kind:'heal',x:e.x,y:e.y,r:1.7*CS,life:.5,max:.5})}}
     const sp=e.stunT>0?0:ENEMIES[e.type].spd*CS*(e.slowT>0?e.slowF:1)*((MAP.mod&&MAP.mod.spd)||1);let tx,ty;
     if(e.air){tx=e.tx;ty=e.ty;e.rem=Math.hypot(tx-e.x,ty-e.y)/CS}else{const t=navTarget(e);tx=t[0];ty=t[1];e.rem=t[2]}
     const dx=tx-e.x,dy=ty-e.y,d=Math.hypot(dx,dy)||1,st=Math.min(d,sp*dt);e.x+=dx/d*st;e.y+=dy/d*st;e.walk=(e.walk||0)+st;if(!e.air&&e.type!=='trooper'&&st>0){e.dust=(e.dust||0)-dt;if(e.dust<=0){e.dust=e.type==='scooter'?.06:.1;const r=ENEMIES[e.type].r,l=.9;P({kind:'dust',x:e.x-Math.cos(e.ang)*r+rand(-3,3),y:e.y-Math.sin(e.ang)*r+rand(-3,3),life:l,max:l,size:2,grow:9,drag:.9,vy:-4})}}
     if(d>1){let da=Math.atan2(dy,dx)-e.ang;da=Math.atan2(Math.sin(da),Math.cos(da));e.ang+=da*Math.min(1,dt*10)}
-    if((e.route==='E'&&e.x>W+CS*.5)||(e.route==='S'&&e.y>H+CS*.5)){e.dead=true;e.leaked=true;G.lives-=ENEMIES[e.type].leak;G.st.leaks++;sfx('leak');
+    if((e.route==='E'&&e.x>W+CS*.5)||(e.route==='S'&&e.y>H+CS*.5)){e.dead=true;e.leaked=true;G.lives-=ENEMIES[e.type].leak;G.st.leaks++;sfx('leak');buzz(60);
       floatText(e.route==='E'?W-30:e.x,e.route==='E'?e.y:H-20,`-${ENEMIES[e.type].leak}`,'#ff8a6a');G.flash=.35}}
 
   for(const t of G.towers){const d=TOWERS[t.k],s=stats(t);t.cd-=dt;t.flash=Math.max(0,t.flash-dt);t.recoil=Math.max(0,(t.recoil||0)-dt*7);
@@ -559,14 +644,14 @@ function update(dt){
       if(t.cd<=0){fire(t,tgt,s);t.cd=s.rate}}}
 
   for(const p of G.proj){DSRC=p.kind==='mud'?1:p.kind==='rocket'?2:5;if(p.kind==='shell'){p.t+=dt;const u=Math.min(1,p.t/p.T);p.x=p.sx+(p.tx-p.sx)*u;p.y=p.sy+(p.ty-p.sy)*u;p.z=Math.sin(u*Math.PI)*p.h;
-      if(u>=1){p.done=true;for(const e of G.enemies)if(!e.dead&&!e.air&&Math.hypot(e.x-p.tx,e.y-p.ty)<=p.splash)damage(e,p.dmg);explode(p.tx,p.ty,Math.max(18,p.splash*.6),1.1);for(let k=0;k<8;k++)debris(p.tx,p.ty,2);for(let k=0;k<(p.cl||0);k++){const bx=p.tx+rand(-1,1)*p.splash*1.3,by=p.ty+rand(-1,1)*p.splash*1.3;for(const e of G.enemies)if(!e.dead&&!e.air&&Math.hypot(e.x-bx,e.y-by)<=.7*CS)damage(e,p.dmg*.35);explode(bx,by,11,.3)}}continue}
+      if(u>=1){p.done=true;for(const e of G.enemies)if(!e.dead&&!e.air&&Math.hypot(e.x-p.tx,e.y-p.ty)<=p.splash){damage(e,p.dmg);if(p.sl&&!e.dead){e.slowT=Math.max(e.slowT,1.5);e.slowF=Math.min(e.slowF,1-p.sl)}}explode(p.tx,p.ty,Math.max(18,p.splash*.6),1.1);for(let k=0;k<8;k++)debris(p.tx,p.ty,2);for(let k=0;k<(p.cl||0);k++){const bx=p.tx+rand(-1,1)*p.splash*1.3,by=p.ty+rand(-1,1)*p.splash*1.3;for(const e of G.enemies)if(!e.dead&&!e.air&&Math.hypot(e.x-bx,e.y-by)<=.7*CS)damage(e,p.dmg*.35);explode(bx,by,11,.3)}}continue}
     if(p.tgt&&!p.tgt.dead){p.tx=p.tgt.x;p.ty=p.tgt.y}
     if(p.kind==='rocket'){p.speed=Math.min(p.speed+16*CS*dt,9*CS);p.smoke-=dt;if(p.smoke<=0){p.smoke=.03;const l=.8;P({kind:'smoke',x:p.x-Math.cos(p.ang)*8,y:p.y-Math.sin(p.ang)*8,life:l,max:l,size:2,grow:10,drag:.9,vy:-4})}}
     const dx=p.tx-p.x,dy=p.ty-p.y,d=Math.hypot(dx,dy),st=p.speed*dt;p.ang=Math.atan2(dy,dx);
     if(d<=st+4){p.done=true;
       if(p.kind==='mud'){if(p.tgt&&!p.tgt.dead){damage(p.tgt,p.dmg);const e=p.tgt;e.slowT=Math.max(e.slowT,2.2*(p.st||1));e.slowF=Math.min(e.slowF,1-p.slow*(ENEMIES[e.type].boss?.5:1));if(p.burn){e.burnT=2;e.burnD=Math.max(e.burnD||0,p.burn);e.burnSrc=1}}
         for(let k=0;k<5;k++){const a=rand(0,6.28),v=rand(30,70),l=.35;P({kind:'mud',x:p.tx,y:p.ty,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:l,max:l,size:rand(1.4,2.6)})}G.decals.push({x:p.tx+rand(-6,6),y:p.ty+rand(-6,6),r:rand(4,6),life:6,max:6,kind:'mud',rot:rand(0,6)})}
-      else{for(const e of G.enemies)if(!e.dead&&Math.hypot(e.x-p.tx,e.y-p.ty)<=p.splash)damage(e,p.dmg);
+      else{for(const e of G.enemies)if(!e.dead&&Math.hypot(e.x-p.tx,e.y-p.ty)<=p.splash){damage(e,p.dmg);if(p.burn&&!e.dead&&!e.air){e.burnT=2;e.burnD=Math.max(e.burnD||0,p.burn);e.burnSrc=2}}
         explode(p.tx,p.ty,Math.max(14,p.splash*.5),.6);}}
     else{p.x+=dx/d*st;p.y+=dy/d*st}}
   G.proj=G.proj.filter(p=>!p.done);
@@ -588,11 +673,11 @@ function fire(t,e,s){DSRC=t.k;const ca=Math.cos(t.ang),sa=Math.sin(t.ang);t.flas
   else if(t.k===1){sfx('mud');const bx=t.x+ca*18,by=t.y-3+sa*18;G.proj.push({kind:'mud',x:bx,y:by,sx:bx,sy:by,tx:e.x,ty:e.y,tgt:e,speed:6*CS,dmg:s.dmg,slow:s.slow,ang:t.ang,st:s.slowT*((MAP.mod&&MAP.mod.slow)||1),burn:s.burn});
     for(let k=0;k<3;k++){const v=rand(30,70),a=t.ang+rand(-.4,.4),l=.3;P({kind:'mud',x:bx,y:by,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:l,max:l,size:rand(1,1.8)})}}
   else if(t.k===2){sfx('rocket');t.side^=1;const off=t.side?5:-5,bx=t.x+ca*12-sa*off,by=t.y-3+sa*12+ca*off;
-    for(let q=0;q<s.multi;q++)G.proj.push({kind:'rocket',x:bx+rand(-3,3)*q,y:by+rand(-3,3)*q,tx:e.x,ty:e.y,tgt:e,speed:2*CS*(1-q*.12),dmg:s.dmg,splash:s.splash,smoke:q*.01,ang:t.ang+(q?rand(-.5,.5):0)});
+    for(let q=0;q<s.multi;q++)G.proj.push({kind:'rocket',x:bx+rand(-3,3)*q,y:by+rand(-3,3)*q,tx:e.x,ty:e.y,tgt:e,speed:2*CS*(1-q*.12),dmg:s.dmg,splash:s.splash,burn:s.burnHit||0,smoke:q*.01,ang:t.ang+(q?rand(-.5,.5):0)});
     G.fx.push({kind:'flash',x:t.x-ca*10,y:t.y-3-sa*10,a:t.ang+Math.PI,s:.8,life:.09,max:.09});
     for(let k=0;k<4;k++)puff(t.x-ca*12,t.y-sa*12,'smoke',.45)}
   else if(t.k===5){sfx('mortar');const sp=ENEMIES[e.type].spd*CS*(e.slowT>0?e.slowF:1),T=1.1,tx=e.x+Math.cos(e.ang)*sp*T*.85,ty=e.y+Math.sin(e.ang)*sp*T*.85,bx=t.x+ca*14,by=t.y+sa*14;
-    G.proj.push({kind:'shell',x:bx,y:by,sx:bx,sy:by,tx,ty,t:0,T,z:0,h:34+Math.hypot(tx-bx,ty-by)*.22,dmg:s.dmg,splash:s.splash,cl:s.cluster});
+    G.proj.push({kind:'shell',x:bx,y:by,sx:bx,sy:by,tx,ty,t:0,T,z:0,h:34+Math.hypot(tx-bx,ty-by)*.22,dmg:s.dmg,splash:s.splash,cl:s.cluster,sl:s.shellSlow||0});
     G.fx.push({kind:'flash',x:bx,y:by,a:t.ang,s:1.2,life:.1,max:.1});for(let k=0;k<6;k++)puff(bx,by,'smoke',.7)}
   else if(t.k===4){sfx('flame');const L=lift(3),bx=t.x+ca*20+L[0],by=t.y+sa*20+L[1];
     for(const o of G.enemies){if(o.dead||o.air)continue;const dx=o.x-t.x,dy=o.y-t.y,dd=Math.hypot(dx,dy);if(dd>s.range+ENEMIES[o.type].r)continue;
@@ -754,7 +839,8 @@ function drawEnemy(e,t){const d=ENEMIES[e.type],R=d.r,img=enemySpr(e.type);
   if(e.type==='blimp'){ctx.save();ctx.translate(-7,0);ctx.rotate(t*20);ctx.strokeStyle='rgba(30,30,30,.45)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,-3.5);ctx.lineTo(0,3.5);ctx.stroke();ctx.restore()}
   if(e.slowT>0&&!e.air){ctx.fillStyle='rgba(78,50,24,.85)';for(let k=0;k<4;k++){ctx.beginPath();ctx.arc(Math.cos(k*1.7+e.ph)*R*.5,Math.sin(k*1.7+e.ph)*R*.5,2.2,0,7);ctx.fill()}}
   if(e.sh>0){ctx.strokeStyle='rgba(140,215,255,.85)';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(0,0,R/ES+3,0,7);ctx.stroke();ctx.fillStyle='rgba(140,215,255,.16)';ctx.fill()}
-  if(e.stunT>0){ctx.fillStyle='#ffe96a';for(let k=0;k<3;k++){const a=t*6+k*2.1;ctx.beginPath();ctx.arc(Math.cos(a)*7,Math.sin(a)*7,1.7,0,7);ctx.fill()}}
+  if(e.frozen&&e.stunT>0){ctx.fillStyle='rgba(175,228,255,.5)';ctx.beginPath();ctx.arc(0,0,R/ES+2,0,7);ctx.fill()}
+  else if(e.stunT>0){ctx.fillStyle='#ffe96a';for(let k=0;k<3;k++){const a=t*6+k*2.1;ctx.beginPath();ctx.arc(Math.cos(a)*7,Math.sin(a)*7,1.7,0,7);ctx.fill()}}
   ctx.restore()}
 
 function blob(b,x,y,r,col,a){const g=b.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${col},${a})`);g.addColorStop(1,`rgba(${col},0)`);b.fillStyle=g;b.fillRect(x-r,y-r,r*2,r*2)}
@@ -842,11 +928,14 @@ function render(t){
   {const pc=SET.cb?'rgba(110,210,255,.95)':'rgba(255,232,150,.95)',dc=SET.cb?'rgba(150,220,255,.55)':'rgba(255,250,235,.4)';if(pv&&pv.ok){drawPath(pv.pathE,pc,[7,7],t);if(MAP.S)drawPath(pv.pathS,pc,[7,7],t)}else{drawPath(G.pathE,dc,[7,7],t);if(MAP.S)drawPath(G.pathS,dc,[7,7],t)}}
   if(sel){const s=stats(sel);ctx.beginPath();ctx.arc(sel.x,sel.y,s.range,0,7);ctx.fillStyle='rgba(233,178,60,.1)';ctx.fill();ctx.strokeStyle='rgba(233,178,60,.85)';ctx.lineWidth=2;ctx.stroke()}
   drawParts(LOW);
+  ctx.save();ctx.globalCompositeOperation='lighter';ctx.setLineDash([4,5]);ctx.lineDashOffset=-t*12;ctx.lineWidth=2.4;for(const tw of G.towers)for(const o of tw.cbp||[]){ctx.strokeStyle='rgba(130,210,255,.55)';ctx.beginPath();ctx.moveTo(tw.x,tw.y);ctx.lineTo(o.x,o.y);ctx.stroke()}ctx.restore();
+  if(G.aim&&hover>=0){const c=hover%COLS;ctx.fillStyle='rgba(255,90,60,.16)';ctx.fillRect((c+.5-1.15)*CS,0,2.3*CS,H);ctx.strokeStyle='rgba(255,120,90,.8)';ctx.setLineDash([8,6]);ctx.lineWidth=2;ctx.strokeRect((c+.5-1.15)*CS,0,2.3*CS,H);ctx.setLineDash([])}
   const objs=G.towers.slice();for(const e of G.enemies)if(!e.air)objs.push(e);objs.sort((a,b)=>ROT?(b.x-a.x):(a.y-b.y));
   for(const o of objs){if(o.k!==undefined)drawTowerObj(o);else drawEnemy(o,t)}
   for(const p of G.proj)drawProj(p);
   drawParts(MID);
   for(const e of G.enemies)if(e.air)drawEnemy(e,t);
+  if(G.jet){const u=G.jet.t/1.2,y=-80+u*(H+160),x=G.jet.x;ctx.globalAlpha=.3;blit(ctx,softShadow(),x+18,y+30,0,.7);ctx.globalAlpha=1;ctx.save();ctx.translate(x,y);ctx.rotate(Math.PI/2);ctx.fillStyle='#5a646c';ctx.beginPath();ctx.moveTo(26,0);ctx.lineTo(-14,-24);ctx.lineTo(-8,0);ctx.lineTo(-14,24);ctx.closePath();ctx.fill();ctx.fillStyle='#8a969e';ctx.beginPath();ctx.ellipse(2,0,22,5,0,0,7);ctx.fill();ctx.fillStyle='#bfe8f8';ctx.beginPath();ctx.ellipse(14,0,6,2.6,0,0,7);ctx.fill();ctx.fillStyle='#ffb14a';ctx.beginPath();ctx.arc(-21,0,3+Math.random()*2,0,7);ctx.fill();ctx.restore()}
   drawClouds(t);
   ctx.globalCompositeOperation='lighter';
   for(const tw of G.towers)if(tw.k===3){const L=lift(7.5);ctx.globalAlpha=.55+(tw.flash>0?.4:0);blit(ctx,glowSpr('cyan'),tw.x+L[0],tw.y+L[1],0,.45+.06*Math.sin(t*5+tw.id)+(tw.flash>0?.3:0))}
@@ -876,13 +965,19 @@ function render(t){
   for(const f of G.fx){if(f.kind!=='text')continue;const a=f.life/f.max,[X,Y]=toS(f.x,f.y);ctx.globalAlpha=Math.min(1,a*1.5);ctx.lineWidth=3;ctx.strokeStyle='rgba(20,25,12,.75)';ctx.strokeText(f.txt,X,Y-(f.rise||0));ctx.fillStyle=f.col;ctx.fillText(f.txt,X,Y-(f.rise||0))}ctx.globalAlpha=1;
   if(hc&&pending===hover&&pv&&pv.ok){const[X,Y]=toS(hc[0],hc[1]);ctx.fillStyle='#fff6dc';ctx.font='700 12px "Barlow Semi Condensed",sans-serif';ctx.lineWidth=3;ctx.strokeStyle='rgba(20,25,12,.7)';ctx.strokeText('TAP AGAIN TO BUILD',X,Y-30);ctx.fillText('TAP AGAIN TO BUILD',X,Y-30)}
   if(G.flash>0){ctx.fillStyle=`rgba(220,60,40,${G.flash*.45})`;ctx.fillRect(0,0,SW,SH)}
+  if(G.flashB>0){ctx.fillStyle=`rgba(150,210,255,${G.flashB*.6})`;ctx.fillRect(0,0,SW,SH)}
+  if(G.weather==='rain'){ctx.fillStyle='rgba(30,50,80,.12)';ctx.fillRect(0,0,SW,SH);ctx.strokeStyle='rgba(210,230,255,.35)';ctx.lineWidth=1.2;ctx.beginPath();for(let k=0;k<80;k++){const x=(k*97.3+t*60)%SW,y=(k*53.7+t*900)%SH;ctx.moveTo(x,y);ctx.lineTo(x-4,y+14)}ctx.stroke()}
+  if(G.weather==='fog'){for(let k=0;k<6;k++){const x=((k*211+t*14)%(SW+400))-200,y=SH*(.12+.15*k),gr=ctx.createRadialGradient(x,y,0,x,y,240);gr.addColorStop(0,'rgba(236,240,244,.42)');gr.addColorStop(1,'rgba(236,240,244,0)');ctx.fillStyle=gr;ctx.fillRect(x-240,y-240,480,480)}}
+  if(G.weather==='gold'){ctx.fillStyle='rgba(255,210,80,.07)';ctx.fillRect(0,0,SW,SH)}
   {const wt=G.max?`WAVE ${G.wave} / ${G.max}`:`WAVE ${G.wave}`;ctx.font='20px "Saira Stencil One",Impact,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
     const ww=ctx.measureText(wt).width;ctx.fillStyle='rgba(14,19,10,.62)';rr(ctx,10,10,ww+26,34,8);ctx.fill();ctx.fillStyle='#f0ead2';ctx.fillText(wt,23,28);
     if(G.max){const bw=ww+26,f=Math.min(1,G.wave/G.max);ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(14,40,bw-8,3);ctx.fillStyle='#e9b23c';ctx.fillRect(14,40,(bw-8)*f,3)}
     const pf='700 16px "Barlow Semi Condensed",sans-serif',py=ROT?52:10,pcx=ROT?SW/2:SW/2;
-    if(G.counting&&G.wave>0)pill(`NEXT WAVE IN ${Math.ceil(G.countdown)}`,pcx,py,pf,'#e9b23c');
+    if(G.counting&&G.wave>0)pill((SET.auto||G.trial)?`NEXT WAVE IN ${Math.ceil(G.countdown)}`:'SEND THE NEXT WAVE WHEN READY',pcx,py,pf,'#e9b23c');
     else if(G.wave===0)pill(ROT?'BUILD A MAZE, THEN START':'BUILD YOUR MAZE, THEN START WAVE 1',pcx,py,pf,'#f0ead2');
     if(G.trial)pill('TIME '+fmtTime(G.time),SW-84,ROT?94:10,pf,'#f0ead2');
+    if(G.weather)pill(WEATHER[G.weather].n.toUpperCase()+': '+WEATHER[G.weather].s,pcx,py+38,'700 14px "Barlow Semi Condensed",sans-serif',G.weather==='gold'?'#ffd24a':'#cfe6ff');
+    if(G.aim)pill('TAP WHERE TO DROP THE AIRSTRIKE',pcx,SH-48,pf,'#ff9a7a');
     const b=G.banner;if(b&&b.life>0){const a=Math.max(0,Math.min(1,b.life/.5,(2.2-b.life)/.2)),pop=1+Math.max(0,(b.life-1.95))*1.6,bf=Math.round(Math.min(64,SW/7));
       ctx.save();ctx.globalAlpha=a;ctx.translate(SW/2,SH/2-20);ctx.scale(pop,pop);ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.font=`${bf}px "Saira Stencil One",Impact,sans-serif`;ctx.lineWidth=8;ctx.strokeStyle='rgba(14,19,10,.75)';ctx.strokeText(b.txt,0,0);ctx.fillStyle='#f3c04e';ctx.fillText(b.txt,0,0);
@@ -899,7 +994,7 @@ TOWERS.forEach((d,k)=>{const b=document.createElement('button');b.className='tbt
   b.appendChild(ic);const tx=document.createElement('div');tx.className='t';tx.innerHTML=`<b>${d.name}</b><span>$${d.cost}</span>`;b.appendChild(tx);
   const key=document.createElement('span');key.className='key';key.textContent=k+1;b.appendChild(key);
   b.addEventListener('click',()=>setBuild(buildType===k?null:k));pal.appendChild(b)});
-function setBuild(k){if(k!==null&&G&&G.allowed&&!G.allowed.includes(k)){toast('Not allowed today. Use '+G.allowed.map(a=>TOWERS[a].name).join(', '));return}buildType=k;cv.classList.toggle('building',k!==null);sel=null;pending=-1;G&&(G.preview=null);if(hover>=0&&k!==null)setHover(hover);infoKey='';
+function setBuild(k){if(k!==null&&G&&G.allowed&&!G.allowed.includes(k)){toast((G.mode==='campaign'?'Not unlocked yet. Use ':'Not allowed today. Use ')+G.allowed.map(a=>TOWERS[a].name).join(', '));return}if(k!==null&&G)G.aim=false;buildType=k;cv.classList.toggle('building',k!==null);sel=null;pending=-1;G&&(G.preview=null);if(hover>=0&&k!==null)setHover(hover);infoKey='';
   TOWERS.forEach((_,i)=>$('tb'+i).classList.toggle('on',i===k))}
 function setHover(i){hover=i;if(i<0||buildType===null||!G){if(G)G.preview=null;return}const r=checkPlace(i);r.i=i;G.preview=r}
 function cellFromEvent(ev){const b=cv.getBoundingClientRect(),SW=(ROT?H:W)+2*M,SH=(ROT?W:H)+2*M;let x=(ev.clientX-b.left)/b.width*SW,y=(ev.clientY-b.top)/b.height*SH;
@@ -917,6 +1012,7 @@ cv.addEventListener('pointerleave',ev=>{if(ev.pointerType==='mouse'&&!drag){hove
 cv.addEventListener('contextmenu',ev=>{ev.preventDefault();setBuild(null)});
 cv.addEventListener('pointerup',ev=>{if(!G||G.over||ev.button>0)return;const d=drag;drag=null;if(d&&(d.moved||d.mouse))return;
   const i=cellFromEvent(ev);if(i<0)return;
+  if(G.aim){doStrike(i%COLS);return}
   const t=G.towerAt[i];if(t){sel=sel===t?null:t;if(sel){buildType=null;setBuild(null);sel=t}infoKey='';return}
   if(buildType===null){sel=null;infoKey='';return}
   if(pending!==i){pending=i;setHover(i);if(!G.preview.ok&&G.preview.msg)toast(G.preview.msg);return}
@@ -924,15 +1020,15 @@ cv.addEventListener('pointerup',ev=>{if(!G||G.over||ev.button>0)return;const d=d
 function place(i,quiet){const p=G.preview&&G.preview.i===i?G.preview:checkPlace(i);const d=TOWERS[buildType];
   if(G.allowed&&!G.allowed.includes(buildType)){toast('That tower is not allowed in this challenge');return}
   if(!p.ok){if(p.msg&&!quiet){toast(p.msg);sfx('deny')}return}
-  if(G.cash<d.cost){toast(`Need $${d.cost-G.cash} more for a ${d.name}`);sfx('deny');return}
+  const cost=costOf(buildType);if(G.cash<cost){toast(`Need $${cost-G.cash} more for a ${d.name}`);sfx('deny');return}
   sfx('build');G.st.built[buildType]++;
-  G.cash-=d.cost;const c=i%COLS,r=(i/COLS)|0;const t={id:++uid,k:buildType,lvl:1,x:(c+.5)*CS,y:(r+.5)*CS,i,ang:-Math.PI/2,cd:0,flash:0,side:0,spent:d.cost,tm:'first',spec:null};
-  G.towers.push(t);G.towerAt[i]=t;G.fieldE=p.fE;G.fieldS=p.fS;G.pathE=p.pathE;G.pathS=p.pathS;pending=-1;
+  G.cash-=cost;const c=i%COLS,r=(i/COLS)|0;const t={id:++uid,k:buildType,lvl:1,x:(c+.5)*CS,y:(r+.5)*CS,i,ang:-Math.PI/2,cd:0,flash:0,side:0,spent:cost,tm:'first',spec:null,fresh:true};
+  G.towers.push(t);G.towerAt[i]=t;G.undo.push({t:'b',tw:t});computeCombos();G.fieldE=p.fE;G.fieldS=p.fS;G.pathE=p.pathE;G.pathS=p.pathS;pending=-1;
   t.born=G.time;setTimeout(()=>{if(G)for(let k=0;k<9;k++)puff(t.x,t.y+10,'dust',.7)},280/speed);
   setHover(i);infoKey='';snap()}
 function upgrade(spec){if(!sel||sel.lvl>=4)return;if(sel.lvl===3&&!spec)spec='a';const c=upCost(sel);if(G.cash<c){toast(`Need $${c-G.cash} more to upgrade`);return}
-  sfx('up');G.cash-=c;sel.spent+=c;sel.lvl++;if(sel.lvl===4){sel.spec=spec;unlock('spec')}G.fx.push({kind:'ring',x:sel.x,y:sel.y,r:24,life:.35,max:.35});for(let k=0;k<14;k++){const a=rand(0,6.28),v=rand(40,110),l=.4;P({kind:'spark',x:sel.x,y:sel.y-4,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:l,max:l,size:1.5})}infoKey='';snap()}
-function sell(){if(!sel)return;sfx('sell');const v=sellVal(sel);G.cash+=v;for(let k=0;k<10;k++)puff(sel.x,sel.y,'dust',.8);G.towerAt[sel.i]=null;G.towers=G.towers.filter(t=>t!==sel);floatText(sel.x,sel.y,`+$${v}`,'#ffe08a');sel=null;refreshFields();infoKey='';snap()}
+  sfx('up');G.undo.push({t:'u',tw:sel,cost:c,lvl:sel.lvl,spec:sel.spec});G.cash-=c;sel.spent+=c;sel.lvl++;if(sel.lvl===4){sel.spec=spec;unlock('spec')}G.fx.push({kind:'ring',x:sel.x,y:sel.y,r:24,life:.35,max:.35});for(let k=0;k<14;k++){const a=rand(0,6.28),v=rand(40,110),l=.4;P({kind:'spark',x:sel.x,y:sel.y-4,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:l,max:l,size:1.5})}infoKey='';snap()}
+function sell(){if(!sel)return;sfx('sell');const v=sellVal(sel);G.undo.push({t:'s',d:{k:sel.k,lvl:sel.lvl,i:sel.i,spec:sel.spec,tm:sel.tm,spent:sel.spent,fresh:sel.fresh,ang:sel.ang},refund:v});G.cash+=v;for(let k=0;k<10;k++)puff(sel.x,sel.y,'dust',.8);G.towerAt[sel.i]=null;G.towers=G.towers.filter(t=>t!==sel);floatText(sel.x,sel.y,`+$${v}`,'#ffe08a');sel=null;refreshFields();computeCombos();infoKey='';snap()}
 function sendWave(){if(!G||G.over||G.choice||G.queue.length||(G.max&&G.wave>=G.max))return;launchWave(0)}
 
 let infoKey='',hudCache={};
@@ -946,17 +1042,17 @@ function placeQuick(){const qb=$('qb');if(!G||!sel||G.over||!G.towers.includes(s
     const w=b.offsetWidth||90;put(b,px-d-w/2+20,py+dy)})}}
 $('qSell').onclick=()=>{if(sel)sell()};$('qUp').onclick=()=>{if(sel)upgrade()};$('qA').onclick=()=>{if(sel)upgrade('a')};$('qB').onclick=()=>{if(sel)upgrade('b')};
 function setText(id,v){if(hudCache[id]!==v){hudCache[id]=v;$(id).textContent=v}}
-function updateUI(){if(!G)return;
+function updateUI(){if(!G)return;updateAbil();{const u=$('undoBtn'),dis=!G.undo.length;if(u._d!==dis){u._d=dis;u.disabled=dis}}
   setText('hLives',String(Math.max(0,G.lives)));setText('hCash','$'+G.cash);setText('hWave',G.max?`${G.wave}/${G.max}`:String(G.wave));
   if(G.max){const pct=(Math.min(1,G.wave/G.max)*100).toFixed(1)+'%';if(hudCache.pct!==pct){hudCache.pct=pct;$('progFill').style.width=pct}setText('progTxt',`Wave ${G.wave} of ${G.max}`)}setText('hScore',fmt(G.score));
   const wb=$('waveBtn');let wt;
-  if(G.counting){wt=G.wave===0?'Start wave 1':`Wave ${G.wave+1} in ${Math.ceil(G.countdown)}s · Send now`;wb.disabled=false}
+  if(G.counting){wt=G.wave===0?'Start wave 1':(SET.auto||G.trial)?`Wave ${G.wave+1} in ${Math.ceil(G.countdown)}s · Send now`:`Send wave ${G.wave+1}`;wb.disabled=false}
   else if(G.max&&G.wave>=G.max){wt='Final wave – hold the line';wb.disabled=true}
   else if(!G.queue.length){wt=`Send wave ${G.wave+1} early`;wb.disabled=false}
   else{wt=`Wave ${G.wave} marching…`;wb.disabled=true}
   setText('waveBtn',wt);
-  TOWERS.forEach((d,k)=>{const el=$('tb'+k),poor=G.cash<d.cost,lk=!!(G.allowed&&!G.allowed.includes(k));if(el._p!==poor){el._p=poor;el.classList.toggle('poor',poor)}if(el._l!==lk){el._l=lk;el.classList.toggle('locked',lk)}});
-  const key=[sel?sel.id+':'+sel.lvl+(sel.tm||'')+(sel.spec||''):'-',buildType,G.wave,sel?(G.cash>=upCost(sel)):0,G.counting].join('|');
+  TOWERS.forEach((d,k)=>{const el=$('tb'+k),poor=G.cash<costOf(k),lk=!!(G.allowed&&!G.allowed.includes(k));if(el._p!==poor){el._p=poor;el.classList.toggle('poor',poor)}if(el._l!==lk){el._l=lk;el.classList.toggle('locked',lk)}});
+  const key=[sel?sel.id+':'+sel.lvl+(sel.tm||'')+(sel.spec||'')+(sel.cbs||[]).join()+(sel.fresh?'f':''):'-',G.weather,buildType,G.wave,sel?(G.cash>=upCost(sel)):0,G.counting].join('|');
   if(key===infoKey)return;infoKey=key;const info=$('info');
   const next=G.max&&G.wave>=G.max?`<div class="next grow">Last wave on the field. Clear it to win.</div>`:`<div class="next grow">Next wave ${G.wave+1}${G.max?' of '+G.max:''}: ${summarize(G.nextWave)}</div>`;
   if(sel){const d=TOWERS[sel.k],s=stats(sel),uc=upCost(sel),tmL={first:'First',strong:'Strongest',fast:'Fastest',close:'Closest'},spn=sel.spec?SPEC[sel.k][sel.spec==='a'?0:1].n:'';
@@ -964,7 +1060,7 @@ function updateUI(){if(!G)return;
     else if(sel.lvl===3)up=SPEC[sel.k].map((sp,i)=>`<button class="btn primary spec" data-sp="${'ab'[i]}" ${G.cash<uc?'disabled':''}><b>${sp.n} · $${uc}</b><small>${sp.d}</small></button>`).join('');
     else up=`<button class="btn" disabled>Max level</button>`;
     info.innerHTML=`<div class="grow"><h3>${d.name} · Level ${sel.lvl}${spn?' · '+spn:''}</h3><div class="stats"><span>Damage <b>${Math.round(s.dmg)}</b></span><span>Range <b>${(s.range/CS).toFixed(1)}</b> tiles</span><span>Rate <b>${(1/s.rate).toFixed(1)}</b>/s</span>${s.slow?`<span>Slow <b>${Math.round(s.slow*100)}%</b></span>`:''}${s.chain?`<span>Jumps <b>${s.chain}</b></span>`:''}${s.burn?`<span>Burn <b>${Math.round(s.burn)}</b>/s</span>`:''}${s.multi>1?`<span>Rockets <b>${s.multi}</b></span>`:''}${s.cluster?`<span>Bomblets <b>${s.cluster}</b></span>`:''}${s.stun?`<span>Stun <b>${s.stun}s</b></span>`:''}<span>${d.air?'Ground + air':'Ground only'}</span></div>
-      <div class="tmRow">Aim at:${Object.keys(tmL).map(m=>`<button class="tmBtn" data-tm="${m}" aria-pressed="${(sel.tm||'first')===m}">${tmL[m]}</button>`).join('')}</div></div>
+      ${(sel.cbs||[]).length?`<div class="cbRow">Combo: ${sel.cbs.map(c=>`<b title="${COMBOS[c].d}">${COMBOS[c].n}</b>`).join(", ")}</div>`:""}${sel.fresh?`<div class="cbRow" style="color:#9be15d">Full refund if sold before the next wave</div>`:""}<div class="tmRow">Aim at:${Object.keys(tmL).map(m=>`<button class="tmBtn" data-tm="${m}" aria-pressed="${(sel.tm||'first')===m}">${tmL[m]}</button>`).join('')}</div></div>
       <div class="acts">${up}<button class="btn" id="sellBtn">Sell +$${sellVal(sel)}</button></div>`;
     if($('upBtn'))$('upBtn').onclick=()=>upgrade();info.querySelectorAll('.spec').forEach(b=>b.onclick=()=>upgrade(b.dataset.sp));$('sellBtn').onclick=sell;
     info.querySelectorAll('.tmBtn').forEach(b=>b.onclick=()=>{if(sel){sel.tm=b.dataset.tm;infoKey='';snap()}})}
@@ -972,13 +1068,15 @@ function updateUI(){if(!G)return;
   else info.innerHTML=`<div class="grow"><h3>Pick a tower below</h3><div class="stats"><span>Tap a built tower to upgrade or sell it.</span></div></div>${next}`}
 
 $('waveBtn').onclick=sendWave;
-$('speedBtn').onclick=()=>{speed=speed===1?2:speed===2?3:1;$('speedBtn').textContent=speed+'×'};
+$('speedBtn').onclick=()=>{speed=speed===1?2:speed===2?3:speed===3?5:1;$('speedBtn').textContent=speed+'×'};
+$('undoBtn').onclick=undo;
+const syncAuto=()=>{$('autoBtn').textContent=SET.auto?'Auto-start on':'Auto-start off';$('autoBtn').setAttribute('aria-pressed',String(SET.auto));$('autoBtn').classList.toggle('off',!SET.auto)};$('autoBtn').onclick=()=>{SET.auto=!SET.auto;saveSet();syncAuto()};syncAuto();
 $('pauseBtn').onclick=togglePause;
 function togglePause(){if(!G||G.over)return;paused=!paused;$('pauseBtn').textContent=paused?'Resume':'Pause'}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&!G.over){snap();if(!paused)togglePause()}try{if(AU.ctx){document.hidden?AU.ctx.suspend():AU.ctx.resume()}}catch(e){}});
 document.addEventListener('keydown',ev=>{if(modalOpen){if(ev.key==='Escape'&&$('modal').dataset.closable)closeModal();return}if(tutI>=0){if(ev.key==='Escape')closeTut();return}if(!G||G.over||ev.target.tagName==='TEXTAREA')return;const k=ev.key.toLowerCase();
-  if(k>='1'&&k<='6'){setBuild(buildType===+k-1?null:+k-1)}else if(k==='escape'){setBuild(null);sel=null;infoKey=''}
-  else if(k===' '){ev.preventDefault();togglePause()}else if(k==='u')upgrade();else if(k==='s')sell();else if(k==='n')sendWave()});
+  if(k>='1'&&k<='6'){setBuild(buildType===+k-1?null:+k-1)}else if(k==='escape'){setBuild(null);sel=null;G.aim=false;infoKey=''}
+  else if(k===' '){ev.preventDefault();togglePause()}else if(k==='u')upgrade();else if(k==='s')sell();else if(k==='n')sendWave();else if(k==='z')undo();else if(k==='q')useAbil('strike');else if(k==='w')useAbil('freeze');else if(k==='e')useAbil('cash')});
 
 function bestKey(mode,date,d=diff,map=selMap){const base='meadowsiege:best:'+d+':'+(mode==='daily'?'daily:'+date:mode);return map==='meadow'?base:base+':'+map}
 function setDiff(d){diff=d;store.set('meadowsiege:diff',d);if(!$('startScreen').hidden)showStart()}
@@ -1000,18 +1098,20 @@ $('modeList').innerHTML=MODEORDER.map(m=>`<button type="button" role="radio" dat
 function showStart(){closeTut();document.querySelector('.top').hidden=true;$('startScreen').hidden=false;$('overScreen').hidden=true;$('gameUI').hidden=true;$('hud').hidden=true;$('modeTag').textContent='Open-field defence';
   document.querySelectorAll('.modeList button').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.m===selMode)));
   document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.d===diff)));$('diffNote').textContent=DIFFS[diff].note;
-  $('mapName').textContent=MAPS[selMap].name;const st=store.get('meadowsiege:stars:'+selMap+':'+diff)||0;$('mapStars').innerHTML=`<span>${starStr(st)}</span><small>${st?'Best on '+DIFFS[diff].name:'No stars yet on '+DIFFS[diff].name}</small>`;
+  if(!MAPS[selMap])selMap='meadow';$('mapName').textContent=MAPS[selMap].name;const st=store.get('meadowsiege:stars:'+selMap+':'+diff)||0;$('mapStars').innerHTML=`<span>${starStr(st)}</span><small>${st?'Best on '+DIFFS[diff].name:'No stars yet on '+DIFFS[diff].name}</small>`;
   let br=MAPS[selMap].brief+' '+MODES[selMode].brief;if(selMode==='daily')br+=` Today is ${todayStr()}.`;
   if(selMode==='challenge'){setMap(selMap);const a=challengeSet(seedFor('challenge',selMap,todayStr()));br+=` Today's towers: ${a.map(k=>TOWERS[k].name).join(', ')}.`}
   $('briefing').textContent=br;$('modeBest').textContent=bestText();
   const sv=store.get('meadowsiege:save');$('contBtn').hidden=!sv;if(sv)$('contBtn').innerHTML=`<b>Continue</b><span>${MODES[sv.mode].name} · ${MAPS[sv.map].name} · ${DIFFS[sv.diff].name} · ${sv.wave?'wave '+sv.wave:'not started'}</span>`;
-  const A=store.get('meadowsiege:ach')||{};$('achBtn').textContent=`Achievements ${Object.keys(A).length}/${ACH.length}`;drawPreview()}
+  const A=store.get('meadowsiege:ach')||{};$('achBtn').textContent=`Achievements ${Object.keys(A).length}/${ACH.length}`;
+  const cu=campUnlocked();$('campBtn').innerHTML=`<b>Campaign</b><span>${cu>=CAMP.length?'Complete! Replay any level':`Level ${cu+1} of ${CAMP.length}: ${CAMP[cu].n}`}</span>`;$('perkBtn').textContent=`Perks ${starTotal()-starSpent()}★`;
+  if(attract){cancelAnimationFrame(attract);attract=null}drawPreview();startAttract()}
 document.querySelectorAll('.modeList button').forEach(b=>b.onclick=()=>{selMode=b.dataset.m;store.set('meadowsiege:mode',selMode);showStart()});
 const stepMap=d=>{selMap=MAPORDER[(MAPORDER.indexOf(selMap)+d+MAPORDER.length)%MAPORDER.length];store.set('meadowsiege:map',selMap);showStart()};
 $('mapPrevBtn').onclick=()=>stepMap(-1);$('mapNextBtn').onclick=()=>stepMap(1);
 // ---------- modal ----------
 let modalOpen=false,modalOnClose=null;
-function openModal(title,html,onClose,closable=true){$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('modal').hidden=false;modalOpen=true;modalOnClose=onClose||null;$('modalClose').hidden=!closable;$('modal').dataset.closable=closable?'1':'';
+function openModal(title,html,onClose,closable=true,wide=false){$('modal').querySelector('.modalCard').classList.toggle('wide',!!wide);$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('modal').hidden=false;modalOpen=true;modalOnClose=onClose||null;$('modalClose').hidden=!closable;$('modal').dataset.closable=closable?'1':'';
   setTimeout(()=>{const f=$('modalBody').querySelector('button,input')||$('modalClose');f&&f.focus()},30)}
 function closeModal(){if($('modal').hidden)return;$('modal').hidden=true;modalOpen=false;const f=modalOnClose;modalOnClose=null;f&&f()}
 $('modalClose').onclick=closeModal;
@@ -1021,17 +1121,115 @@ function saveSet(){store.set('meadowsiege:settings',SET)}
 function openSettings(){
   openModal('Settings',`<div class="setRow"><label for="setSfx">Sound effects</label><input type="range" id="setSfx" min="0" max="100" value="${Math.round(SET.sfx*100)}"></div>
   <div class="setRow"><label for="setMus">Music</label><input type="range" id="setMus" min="0" max="100" value="${Math.round(SET.mus*100)}"></div>
+  <div class="setRow"><label for="setAuto">Auto-start waves<small>Start the next wave by itself 5 seconds after a wave is cleared</small></label><input type="checkbox" id="setAuto" ${SET.auto?'checked':''}></div>
+  <div class="setRow"><label for="setVib">Phone vibration<small>Buzz on leaks, bosses and airstrikes (phones that support it)</small></label><input type="checkbox" id="setVib" ${SET.vib?'checked':''}></div>
   <div class="setRow"><label for="setCb">Colour-blind friendly colours<small>Blue and orange health bars, a blue route line and orange warnings</small></label><input type="checkbox" id="setCb" ${SET.cb?'checked':''}></div>
   <div class="setRow"><label>Tutorial<small>Show the step-by-step guide at the start of your next game</small></label><button class="ghostBtn" id="setTut">Show again</button></div>
   <div class="setRow"><label>Progress<small>Clears best scores, stars, achievements and your saved game</small></label><button class="ghostBtn" id="setReset">Reset progress</button></div>`);
   $('setSfx').oninput=e=>{SET.sfx=e.target.value/100;saveSet();applyAudio()};$('setMus').oninput=e=>{SET.mus=e.target.value/100;saveSet();applyAudio()};
-  $('setCb').onchange=e=>{SET.cb=e.target.checked;saveSet()};
+  $('setCb').onchange=e=>{SET.cb=e.target.checked;saveSet()};$('setAuto').onchange=e=>{SET.auto=e.target.checked;saveSet();syncAuto()};$('setVib').onchange=e=>{SET.vib=e.target.checked;saveSet();if(SET.vib)buzz(40)};
   $('setTut').onclick=e=>{store.set('meadowsiege:tutDone',false);e.target.textContent='Will show next game'};
-  $('setReset').onclick=e=>{const b=e.target;if(b.dataset.armed){try{Object.keys(localStorage).filter(k=>k.startsWith('meadowsiege:')&&k!=='meadowsiege:settings').forEach(k=>localStorage.removeItem(k))}catch(x){}b.textContent='Progress cleared';b.disabled=true;if(!$('startScreen').hidden)showStart()}else{b.dataset.armed='1';b.textContent='Tap again to confirm'}}}
-$('achBtn').onclick=openAch;$('setBtn2').onclick=openSettings;$('setBtn').onclick=openSettings;
+  $('setReset').onclick=e=>{const b=e.target;if(b.dataset.armed){try{Object.keys(localStorage).filter(k=>k.startsWith('meadowsiege:')&&k!=='meadowsiege:settings').forEach(k=>localStorage.removeItem(k))}catch(x){}PK={};loadCustom();b.textContent='Progress cleared';b.disabled=true;if(!$('startScreen').hidden)showStart()}else{b.dataset.armed='1';b.textContent='Tap again to confirm'}}}
+$('achBtn').onclick=openAch;$('setBtn2').onclick=openSettings;$('setBtn').onclick=openSettings;$('campBtn').onclick=openCampaign;$('perkBtn').onclick=openPerks;$('editBtn').onclick=()=>openEditor();
 // ---------- achievements ----------
 function unlock(id){const A=store.get('meadowsiege:ach')||{};if(A[id])return;A[id]=Date.now();store.set('meadowsiege:ach',A);const a=ACH.find(x=>x[0]===id);if(G)(G.newAch=G.newAch||[]).push(id);
   if(a&&G&&!$('gameUI').hidden){toast('Achievement unlocked: '+a[1]);sfx('up')}}
+// ---------- abilities ----------
+function renderAbil(){const el=$('abil');if(!G)return;const al=G.abAllowed;
+  el.innerHTML=ABIL.map(a=>`<button class="abBtn" id="ab_${a.k}" data-k="${a.k}" ${al.includes(a.k)?'':'hidden'} title="${a.d} (key ${a.key})"><i class="abCd" id="abc_${a.k}"></i><svg viewBox="0 0 24 24" aria-hidden="true">${ABICON[a.k]}</svg><span class="abT"><b>${a.n}</b><small id="abs_${a.k}">Ready</small></span></button>`).join('');
+  el.hidden=!al.length;el.querySelectorAll('.abBtn').forEach(b=>b.onclick=()=>useAbil(b.dataset.k))}
+function updateAbil(){if(!G)return;for(const a of ABIL){const b=$('ab_'+a.k);if(!b||b.hidden)continue;const cd=G.ab[a.k],ready=cd<=0,aim=G.aim&&a.k==='strike';
+  const tx=aim?'Tap the field':ready?'Ready':Math.ceil(cd)+'s';if(b._t!==tx){b._t=tx;$('abs_'+a.k).textContent=tx}
+  const pct=ready?0:Math.round(cd/a.cd*100);if(b._p!==pct){b._p=pct;$('abc_'+a.k).style.height=pct+'%'}
+  if(b._r!==ready){b._r=ready;b.classList.toggle('ready',ready)}if(b._a!==aim){b._a=aim;b.classList.toggle('aiming',aim)}}}
+function useAbil(k){if(!G||G.over||G.choice||!G.abAllowed.includes(k))return;const A=ABIL.find(a=>a.k===k);
+  if(k==='strike'&&G.aim){G.aim=false;return}
+  if(G.ab[k]>0){toast(`${A.n} recharges in ${Math.ceil(G.ab[k])}s`);return}
+  if(k==='strike'){setBuild(null);sel=null;infoKey='';G.aim=true;toast('Tap the field to call in the airstrike');return}
+  unlock('ability');G.ab[k]=A.cd;
+  if(k==='freeze'){for(const e of G.enemies)if(!e.dead){e.stunT=Math.max(e.stunT||0,ENEMIES[e.type].boss?1.5:3);e.frozen=1}G.flashB=.5;sfx('freeze');buzz(40)}
+  if(k==='cash'){const v=40+G.wave*10;G.cash+=v;floatText(W/2,H/2,`+$${v} supply drop`,'#ffe08a');sfx('sell');buzz(30)}
+  snap()}
+function doStrike(c){unlock('ability');G.aim=false;G.ab.strike=ABIL[0].cd;const x=(c+.5)*CS;for(let r=-1;r<=ROWS;r++)G.strikes.push({x,y:(r+.5)*CS,t:.35+(r+1)*.045});G.jet={x,t:0};sfx('rocket');buzz(90)}
+// ---------- undo ----------
+function undo(){if(!G||G.over||G.choice)return;if(!G.undo.length){toast('Nothing to undo');return}const a=G.undo.pop();
+  if(a.t==='b'){if(!G.towers.includes(a.tw))return undo();G.cash+=a.tw.spent;G.towerAt[a.tw.i]=null;G.towers=G.towers.filter(t=>t!==a.tw);G.st.built[a.tw.k]=Math.max(0,G.st.built[a.tw.k]-1);if(sel===a.tw)sel=null;toast('Build undone, full refund')}
+  else if(a.t==='u'){if(!G.towers.includes(a.tw))return undo();G.cash+=a.cost;a.tw.spent-=a.cost;a.tw.lvl=a.lvl;a.tw.spec=a.spec;toast('Upgrade undone')}
+  else{const d=a.d;if(G.towerAt[d.i]){toast('Something is in the way');G.undo.push(a);return}if(G.cash<a.refund){toast('Not enough cash to undo that sale');G.undo.push(a);return}
+    const ck=checkPlace(d.i);if(!ck.ok){toast(ck.msg||'That spot is blocked right now');G.undo.push(a);return}
+    G.cash-=a.refund;const c=d.i%COLS,r=(d.i/COLS)|0,t={id:++uid,k:d.k,lvl:d.lvl,spec:d.spec,tm:d.tm,x:(c+.5)*CS,y:(r+.5)*CS,i:d.i,ang:d.ang,cd:0,flash:0,side:0,spent:d.spent,fresh:d.fresh,born:G.time};
+    G.towers.push(t);G.towerAt[d.i]=t;toast('Sale undone')}
+  refreshFields();computeCombos();infoKey='';sfx('sell');snap()}
+// ---------- campaign, perks, editor ----------
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function openCampaign(){const p=campProg(),u=campUnlocked(),tot=Object.values(p).reduce((a,b)=>a+b,0);
+  openModal('Campaign',`<p class="edHint">Eight levels across all four maps. New towers and abilities unlock as you go. Stars earned: <b>${tot}/${CAMP.length*3} ★</b></p>
+   <div class="campList">${CAMP.map((L,i)=>{const lock=i>u;return`<button class="campLvl${lock?' lock':''}" data-i="${i}" ${lock?'disabled':''}><span class="n">${i+1}</span><span class="t"><b>${L.n}</b><small>${MAPS[L.map].name} · ${L.waves} waves</small></span><span class="s">${p[i]?starStr(p[i]):lock?'Locked':'New'}</span></button>`}).join('')}</div>`);
+  $('modalBody').querySelectorAll('.campLvl').forEach(b=>b.onclick=()=>openBrief(+b.dataset.i))}
+function openBrief(i){const L=CAMP[i],ab=campAb(i);
+  openModal(`Level ${i+1}: ${L.n}`,`<p class="choiceTxt" style="text-align:left">${L.b}</p>
+   <p class="edHint">${MAPS[L.map].name} · ${L.waves} waves · ${DIFFS[diff].name}<br>Towers: ${campTowers(i).map(k=>TOWERS[k].name).join(', ')}<br>Abilities: ${ab.length?ab.map(a=>ABIL.find(x=>x.k===a).n).join(', '):'none yet'}</p>
+   <div class="winBtns"><button class="btn" id="bBack">All levels</button><button class="btn primary" id="bGo">Start level</button></div>`);
+  $('bBack').onclick=openCampaign;$('bGo').onclick=()=>{closeModal();newGame('campaign',null,i)}}
+function starTotal(){let t=0;try{for(const k of Object.keys(localStorage))if(k.startsWith('meadowsiege:stars:'))t+=+JSON.parse(localStorage.getItem(k))||0}catch(e){}for(const v of Object.values(campProg()))t+=v||0;return t}
+function starSpent(){let s=0;for(const P of PERKS){const r=PK[P.id]||0;for(let i=0;i<r;i++)s+=P.costs[i]}return s}
+function openPerks(){const tot=starTotal(),av=tot-starSpent();
+  openModal('Perks',`<p class="edHint">Spend the stars you earn from wins and campaign levels on permanent upgrades. You have <b>${av} ★</b> to spend (${tot} earned).</p>
+   <div class="achList">${PERKS.map(P=>{const r=PK[P.id]||0,mx=P.costs.length,c=P.costs[r];return`<div class="ach${r?' on':''}"><span class="ic">${r}/${mx}</span><div style="flex:1;min-width:0"><b>${P.n}</b><span>${P.d}</span></div>${r<mx?`<button class="btn primary" data-p="${P.id}" ${av<c?'disabled':''}>${c} ★</button>`:'<span class="edHint">Maxed</span>'}</div>`}).join('')}</div>
+   <div class="row" style="margin-top:10px"><button class="ghostBtn" id="perkReset">Refund all perks</button></div>`);
+  $('modalBody').querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{PK[b.dataset.p]=(PK[b.dataset.p]||0)+1;store.set('meadowsiege:perks',PK);sfx('up');openPerks()});
+  $('perkReset').onclick=()=>{PK={};store.set('meadowsiege:perks',PK);openPerks()}}
+let ED=null;
+const THEME_NAMES={meadow:'Meadow',cross:'Green fields',canyon:'Red canyon',snow:'Snow'};
+function encodeMap(m){const j=JSON.stringify({n:m.name,t:m.theme,s:m.S?1:0,r:m.rocks.map(([c,r])=>r*COLS+c)});return'MS1.'+btoa(unescape(encodeURIComponent(j))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function decodeMap(code){try{const b=code.trim().replace(/^MS1\./,'').replace(/-/g,'+').replace(/_/g,'/');const j=JSON.parse(decodeURIComponent(escape(atob(b))));
+  const rocks=(j.r||[]).filter(i=>Number.isInteger(i)&&i>=0&&i<N).map(i=>[i%COLS,(i/COLS)|0]);return{id:null,name:String(j.n||'Shared map').slice(0,24),theme:THEMES[j.t]?j.t:'meadow',S:!!j.s,rocks}}catch(e){return null}}
+function pathOK(rocks,S){const blk=new Uint8Array(N);for(const[c,r]of rocks)blk[idx(c,r)]=1;
+  const reach=(starts,goals)=>{const seen=new Uint8Array(N),q=[];for(const s of starts)if(!blk[s]){seen[s]=1;q.push(s)}while(q.length){const i=q.shift();if(goals.includes(i))return true;const c=i%COLS,r=(i/COLS)|0;
+    for(const[dc,dr]of[[1,0],[-1,0],[0,1],[0,-1]]){const cc=c+dc,rr=r+dr;if(cc<0||rr<0||cc>=COLS||rr>=ROWS)continue;const j=idx(cc,rr);if(!blk[j]&&!seen[j]){seen[j]=1;q.push(j)}}}return false};
+  return reach(spawnsE,goalsE)&&(!S||reach(spawnsS,goalsS))}
+function gateCell(i,S){return spawnsE.includes(i)||goalsE.includes(i)||(S&&(spawnsS.includes(i)||goalsS.includes(i)))}
+function edDraw(){MAPS._edit={name:ED.name,theme:ED.theme,S:ED.S,rocks:ED.rocks,brief:''};setMap('_edit');buildBg();const c=$('edCv'),g=c.getContext('2d'),k=c.width/(W+2*M);g.drawImage(bgc,0,0,c.width,c.height);
+  g.save();g.scale(k,k);g.translate(M,M);g.strokeStyle='rgba(20,30,10,.22)';g.lineWidth=1;g.beginPath();for(let x=1;x<COLS;x++){g.moveTo(x*CS,0);g.lineTo(x*CS,H)}for(let y=1;y<ROWS;y++){g.moveTo(0,y*CS);g.lineTo(W,y*CS)}g.stroke();
+  g.fillStyle='rgba(255,220,80,.28)';for(let i=0;i<N;i++)if(gateCell(i,ED.S))g.fillRect((i%COLS)*CS,((i/COLS)|0)*CS,CS,CS);g.restore();delete MAPS._edit}
+function customList(){const L=store.get('meadowsiege:custom')||[];if(!L.length)return'';return`<div class="plate small" style="margin-top:12px">Your maps</div><div class="cmList">${L.map(m=>`<div class="cmItem"><b>${esc(m.name)}</b><button class="ghostBtn" data-ed="${m.id}">Edit</button><button class="ghostBtn" data-del="${m.id}">Delete</button></div>`).join('')}</div>`}
+function saveCustom(){const L=store.get('meadowsiege:custom')||[];if(!ED.id){if(L.length>=8){edMsg('You can keep up to 8 maps. Delete one first.');return false}ED.id=Date.now().toString(36)}
+  const rec={id:ED.id,name:(ED.name||'My map').slice(0,24),theme:ED.theme,S:ED.S,rocks:ED.rocks};const j=L.findIndex(m=>m.id===ED.id);if(j>=0)L[j]=rec;else L.push(rec);store.set('meadowsiege:custom',L);loadCustom();unlock('editor');return true}
+function edMsg(t,ok){const m=$('edMsg');if(m){m.textContent=t;m.style.color=ok?'#9be15d':'#ffb38a'}}
+function openEditor(src){ED=src?{id:src.id||null,name:src.name,theme:src.theme,S:!!src.S,rocks:src.rocks.map(r=>[r[0],r[1]])}:{id:null,name:'My map',theme:'meadow',S:false,rocks:[]};
+  openModal('Map editor',`<div class="edTop"><input id="edName" type="text" maxlength="24" value="${esc(ED.name)}" aria-label="Map name"><select id="edTheme" aria-label="Map theme">${Object.entries(THEME_NAMES).map(([k,v])=>`<option value="${k}" ${ED.theme===k?'selected':''}>${v}</option>`).join('')}</select><label class="edChk"><input type="checkbox" id="edS" ${ED.S?'checked':''}> North gate</label></div>
+   <p class="edHint">Tap or drag on the map to place and remove rocks. The yellow squares are gates and must stay clear, and raiders always need a way through.</p>
+   <div class="preview"><canvas id="edCv" width="936" height="576" aria-label="Map editor canvas"></canvas></div><p class="edMsg" id="edMsg"></p>
+   <div class="edBtns"><button class="ghostBtn" id="edClear">Clear rocks</button><button class="ghostBtn" id="edShare">Share code</button><button class="ghostBtn" id="edImport">Load a code</button><span class="grow"></span><button class="btn" id="edSave">Save</button><button class="btn primary" id="edPlay">Save and play</button></div>
+   <div id="edCode" hidden><textarea class="share" id="edCodeTxt" aria-label="Map code" placeholder="Paste a map code here"></textarea><div class="row"><button class="btn" id="edCopy">Copy code</button><button class="btn primary" id="edLoad">Load this code</button></div></div>
+   <div id="edList">${customList()}</div>`,()=>{if(!$('startScreen').hidden)showStart()},true,true);
+  edDraw();const cvE=$('edCv');let mode=null,lastC=-1;
+  const cellAt=ev=>{const b=cvE.getBoundingClientRect(),x=(ev.clientX-b.left)/b.width*(W+2*M)-M,y=(ev.clientY-b.top)/b.height*(H+2*M)-M,c=Math.floor(x/CS),r=Math.floor(y/CS);return c>=0&&r>=0&&c<COLS&&r<ROWS?idx(c,r):-1};
+  const apply=i=>{if(i<0||i===lastC)return;lastC=i;if(gateCell(i,ED.S)){edMsg('Gates must stay clear.');return}const c=i%COLS,r=(i/COLS)|0,j=ED.rocks.findIndex(q=>q[0]===c&&q[1]===r);
+    if(mode==null)mode=j>=0?'del':'add';if(mode==='add'&&j<0){const nr=ED.rocks.concat([[c,r]]);if(!pathOK(nr,ED.S)){edMsg("That rock would block the raiders' path.");return}ED.rocks=nr}else if(mode==='del'&&j>=0)ED.rocks.splice(j,1);else return;edMsg(`${ED.rocks.length} rock${ED.rocks.length===1?'':'s'}`,true);edDraw()};
+  cvE.onpointerdown=ev=>{mode=null;lastC=-1;try{cvE.setPointerCapture(ev.pointerId)}catch(e){}apply(cellAt(ev))};cvE.onpointermove=ev=>{if(mode)apply(cellAt(ev))};cvE.onpointerup=cvE.onpointercancel=()=>{mode=null;lastC=-1};
+  $('edName').oninput=e=>{ED.name=e.target.value};$('edTheme').onchange=e=>{ED.theme=e.target.value;edDraw()};
+  $('edS').onchange=e=>{const S=e.target.checked;const nr=ED.rocks.filter(([c,r])=>!gateCell(idx(c,r),S));if(S&&!pathOK(nr,true)){e.target.checked=false;edMsg('Clear a path from the north gate first.');return}ED.S=S;ED.rocks=nr;edDraw()};
+  $('edClear').onclick=()=>{ED.rocks=[];edDraw();edMsg('Rocks cleared',true)};
+  $('edShare').onclick=()=>{$('edCode').hidden=false;$('edCodeTxt').value=encodeMap(ED);$('edCodeTxt').select();edMsg('Send this code to a mate. They can load it in their map editor.',true)};
+  $('edImport').onclick=()=>{$('edCode').hidden=false;$('edCodeTxt').value='';$('edCodeTxt').focus();edMsg('Paste a code, then press Load this code.',true)};
+  $('edCopy').onclick=()=>{const ta=$('edCodeTxt');try{navigator.clipboard.writeText(ta.value).then(()=>edMsg('Code copied',true),()=>{ta.select();edMsg('Press Ctrl+C to copy',true)})}catch(e){ta.select()}};
+  $('edLoad').onclick=()=>{const m=decodeMap($('edCodeTxt').value);if(!m){edMsg("That code doesn't look right.");return}m.rocks=m.rocks.filter(([c,r])=>!gateCell(idx(c,r),m.S));if(!pathOK(m.rocks,m.S)){edMsg('That map blocks the raiders completely.');return}openEditor(m);edMsg('Map loaded. Press Save to keep it.',true)};
+  $('edSave').onclick=()=>{if(saveCustom()){edMsg('Saved. Find it in the map picker on the start screen.',true);$('edList').innerHTML=customList();wireList()}};
+  $('edPlay').onclick=()=>{if(saveCustom()){selMap='c_'+ED.id;store.set('meadowsiege:map',selMap);modalOnClose=null;closeModal();newGame(selMode==='campaign'?'classic':selMode)}};
+  const wireList=()=>{$('modalBody').querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{const m=(store.get('meadowsiege:custom')||[]).find(x=>x.id===b.dataset.ed);if(m)openEditor(m)});
+    $('modalBody').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(!b.dataset.armed){b.dataset.armed=1;b.textContent='Tap to confirm';return}const L=(store.get('meadowsiege:custom')||[]).filter(x=>x.id!==b.dataset.del);store.set('meadowsiege:custom',L);delete MAPS['c_'+b.dataset.del];loadCustom();if(selMap==='c_'+b.dataset.del)selMap='meadow';$('edList').innerHTML=customList();wireList()})};
+  wireList()}
+// ---------- animated start-screen preview ----------
+let attract=null,attractBase=null;
+function startAttract(){const c=$('mapPrev');attractBase=document.createElement('canvas');attractBase.width=c.width;attractBase.height=c.height;attractBase.getContext('2d').drawImage(c,0,0);
+  if(RM||attract)return;const g=c.getContext('2d'),k=c.width/(W+2*M),t0=performance.now();let lastShot=0,shot=null;
+  const loop=now=>{if($('startScreen').hidden||!attractBase){attract=null;return}const t=(now-t0)/1000;g.drawImage(attractBase,0,0);g.save();g.scale(k,k);g.translate(M,M);
+    const tx=10.5*CS,ty=4.5*CS,ys=6.5*CS,troops=[];for(let i=0;i<5;i++){const x=((t*42+i*95)%(W+160))-80;troops.push(x);g.save();g.translate(x,ys+Math.sin(i*2)*10);g.scale(1.25,1.25);const img=enemySpr('trooper');g.drawImage(img,-img.w/2,-img.h/2,img.w,img.h);g.restore()}
+    let tgt=null,bd=1e9;for(const x of troops){const d=Math.abs(x-tx);if(d<bd&&d<150){bd=d;tgt=x}}const ang=tgt!=null?Math.atan2(ys-ty,tgt-tx):-1.2;
+    drawTowerAt(g,0,3,tx,ty,ang,0,1.15,false);if(tgt!=null&&t-lastShot>.22){lastShot=t;shot={x:tgt,t}}
+    if(shot&&t-shot.t<.06){g.strokeStyle='rgba(255,225,150,.9)';g.lineWidth=2;g.beginPath();g.moveTo(tx+Math.cos(ang)*22,ty-3+Math.sin(ang)*22);g.lineTo(shot.x,ys);g.stroke()}
+    g.restore();attract=requestAnimationFrame(loop)};attract=requestAnimationFrame(loop)}
 // ---------- tutorial ----------
 const TUT=[
  {t:'#cv',h:'Hold the line',p:'<p>Raiders march in through the gap on the <b>left</b> and head for the gap in your fence on the <b>right</b>. On Crossroads they also come down from the <b>top</b>. Every raider that gets through costs you lives, and big ones cost more.</p>'},
@@ -1039,7 +1237,9 @@ const TUT=[
  {t:'#palette',h:'Build a maze',p:'<p>Pick a tower, then tap the grass to place it. On a phone, tap once to preview and tap again to build. <b>Press and drag</b> to lay a whole row.</p><p>Raiders walk around your towers, so use them to build a long, winding path. The dashed line shows their route. You can never block it completely.</p>'},
  {t:'#palette',h:'Six towers',p:'<ul><li><b>Rattler</b>: fast guns, hits ground and air</li><li><b>Mud Pump</b>: slows raiders down</li><li><b>Rocket Rack</b>: long range, splash, hits air</li><li><b>Arc Coil</b>: chain lightning, double damage to shields</li><li><b>Scorcher</b>: flamethrower that burns whole groups</li><li><b>Thumper</b>: long-range mortar with a huge blast</li></ul>'},
  {t:'#info',h:'Upgrade and aim',p:'<p>Tap a tower you have built to <b>upgrade</b> or <b>sell</b> it. At level 3 you choose one of <b>two specialisations</b> for its final upgrade. You can also set what it aims at: the first raider, the strongest, the fastest or the closest.</p>'},
- {t:'.controls',h:'Start the waves',p:'<p>Press <b>Start wave 1</b> when your maze is ready. After each wave you get 5 seconds before the next, or press <b>Send now</b>. Use <b>2× and 3×</b> to speed up and <b>Pause</b> any time. Your game saves after every wave.</p><p>Watch for shield troopers, medics, splitters and a <b>Juggernaut boss every 10 waves from wave 20</b>. Reopen this guide with <b>Help</b>.</p>'}];
+ {t:'#abil',h:'Special abilities',p:'<p><b>Airstrike</b> bombs a whole column: tap it, then tap the field. <b>Freeze</b> stops every raider for 3 seconds. <b>Cash Drop</b> gives you emergency money. Each one recharges after use. Keys Q, W and E.</p>'},
+ {t:'#palette',h:'Tower combos',p:'<p>Some towers power each other up when they sit side by side. A blue link shows a working combo.</p><ul>'+COMBOS.map(c=>`<li><b>${c.n}</b>: ${c.d}</li>`).join('')+'</ul>'},
+ {t:'.controls',h:'Start the waves',p:'<p>Press <b>Start wave 1</b> when your maze is ready. After each wave you get 5 seconds before the next, or press <b>Send now</b>. Use <b>2×, 3× and 5×</b> to speed up and <b>Pause</b> any time. Made a mistake? <b>Undo</b> takes back builds, upgrades and sales, and towers sold before the next wave give a full refund. Your game saves after every wave.</p><p>Watch for shield troopers, medics, splitters and a <b>Juggernaut boss every 10 waves from wave 20</b>. Reopen this guide with <b>Help</b>.</p>'}];
 let tutI=-1,tutForce=false;
 function openTut(i=0){if(!G)return;tutI=i;$('tut').hidden=false;$('tutDots').innerHTML=TUT.map(()=>'<i></i>').join('');showTutStep();setTimeout(()=>$('tutNext').focus(),30)}
 function closeTut(){if(tutI<0)return;tutI=-1;$('tut').hidden=true;store.set('meadowsiege:tutDone',true)}
@@ -1057,50 +1257,55 @@ function seedFor(mode,map,dateStr){if(mode==='endless')return(Math.random()*4294
   if(mode==='daily')return hashStr('meadow-siege:'+dateStr+(map==='meadow'?'':':'+map));
   if(mode==='classic'&&map==='meadow')return hashStr('meadow-siege:classic');
   return hashStr('meadow-siege:'+mode+':'+map+(mode==='challenge'?':'+dateStr:''))}
-function newGame(mode,sv){lastMode=mode;const map=sv?sv.map:selMap,dateStr=sv?sv.dateStr:todayStr();if(sv)diff=sv.diff;setMap(map);
-  const MD=MODES[mode],D=DIFFS[diff],seed=sv?sv.seed:seedFor(mode,map,dateStr),lives=MD.lives||D.lives;
-  G={mode,diff,map,dateStr,seed,max:MD.max,trial:mode==='trial',allowed:mode==='challenge'?challengeSet(seed):null,rock:new Uint8Array(N),towerAt:new Array(N).fill(null),towers:[],enemies:[],proj:[],fx:[],parts:[],decals:[],shake:0,
-    lives,startLives:lives,cash:D.cash,score:0,wave:0,queue:[],spawnT:0,countdown:FIRST_GAP,counting:true,kills:0,time:0,over:false,flash:0,choice:false,playOn:false,wonBefore:false,newAch:[],
+function newGame(mode,sv,lvl){lastMode=mode;const level=mode==='campaign'?(sv?sv.level:(lvl||0)):null;lastLevel=level;const map=mode==='campaign'?CAMP[level].map:sv?sv.map:selMap,dateStr=sv?sv.dateStr:todayStr();if(sv)diff=sv.diff;setMap(map);
+  const MD=MODES[mode],D=DIFFS[diff],seed=sv?sv.seed:mode==='campaign'?hashStr('meadow-siege:campaign:'+level):seedFor(mode,map,dateStr),lives=MD.lives||(D.lives+2*perk('life'));
+  G={mode,diff,map,dateStr,seed,level,max:mode==='campaign'?CAMP[level].waves:MD.max,trial:mode==='trial',allowed:mode==='challenge'?challengeSet(seed):mode==='campaign'?campTowers(level):null,abAllowed:mode==='campaign'?campAb(level):['strike','freeze','cash'],ab:{strike:0,freeze:0,cash:0},undo:[],strikes:[],weather:null,aim:false,jet:null,flashB:0,rock:new Uint8Array(N),towerAt:new Array(N).fill(null),towers:[],enemies:[],proj:[],fx:[],parts:[],decals:[],shake:0,
+    lives,startLives:lives,cash:Math.round(D.cash*(1+.1*perk('cash')))+50*perk('scout'),score:0,wave:0,queue:[],spawnT:0,countdown:FIRST_GAP,counting:true,kills:0,time:0,over:false,flash:0,choice:false,playOn:false,wonBefore:false,newAch:[],
     st:{dmg:[0,0,0,0,0,0],kills:[0,0,0,0,0,0],built:[0,0,0,0,0,0],lives:[],leaks:0}};
   for(const[c,r]of MAP.rocks)G.rock[idx(c,r)]=1;
-  if(sv){for(const k of['wave','lives','startLives','cash','score','kills','time','max','playOn','wonBefore','st'])if(sv[k]!=null)G[k]=sv[k];
-    for(const s of sv.towers){const c=s.i%COLS,r=(s.i/COLS)|0,t={id:++uid,k:s.k,lvl:s.lvl,spec:s.spec||null,tm:s.tm||'first',x:(c+.5)*CS,y:(r+.5)*CS,i:s.i,ang:s.ang??-Math.PI/2,cd:0,flash:0,side:0,spent:s.spent,born:-9};G.towers.push(t);G.towerAt[s.i]=t}
+  if(sv){for(const k of['wave','lives','startLives','cash','score','kills','time','max','playOn','wonBefore','st','ab'])if(sv[k]!=null)G[k]=sv[k];
+    for(const s of sv.towers){const c=s.i%COLS,r=(s.i/COLS)|0,t={id:++uid,k:s.k,lvl:s.lvl,spec:s.spec||null,tm:s.tm||'first',x:(c+.5)*CS,y:(r+.5)*CS,i:s.i,ang:s.ang??-Math.PI/2,cd:0,flash:0,side:0,spent:s.spent,born:-9,fresh:false};G.towers.push(t);G.towerAt[s.i]=t}
     G.countdown=WAVE_GAP}
-  refreshFields();G.nextWave=genWave(G.wave+1);buildBg();
+  refreshFields();computeCombos();G.nextWave=genWave(G.wave+1);buildBg();
   sel=null;buildType=null;hover=-1;pending=-1;paused=!!(sv&&sv.wave>0);speed=1;$('speedBtn').textContent='1×';$('pauseBtn').textContent=paused?'Resume':'Pause';
-  setBuild(null);infoKey='';hudCache={};
+  setBuild(null);infoKey='';hudCache={};renderAbil();TOWERS.forEach((d,k)=>{const sp=$('tb'+k).querySelector('.t span');if(sp)sp.textContent='$'+costOf(k)});
   document.querySelector('.top').hidden=false;$('startScreen').hidden=true;$('overScreen').hidden=true;$('gameUI').hidden=false;$('hud').hidden=false;
-  $('modeTag').textContent=`${MODES[mode].name} · ${MAPS[map].name} · ${D.name}`+(mode==='daily'?` · ${dateStr}`:'');$('prog').hidden=!G.max;
-  const pl=store.get('meadowsiege:played')||{};pl[map]=1;store.set('meadowsiege:played',pl);if(MAPORDER.every(m=>pl[m]))unlock('travel');
+  $('modeTag').textContent=(mode==='campaign'?`Campaign ${level+1}: ${CAMP[level].n}`:`${MODES[mode].name} · ${MAPS[map].name}`)+` · ${D.name}`+(mode==='daily'?` · ${dateStr}`:'');$('prog').hidden=!G.max;
+  const pl=store.get('meadowsiege:played')||{};pl[map]=1;store.set('meadowsiege:played',pl);if(BUILTIN.every(m=>pl[m]))unlock('travel');
   if(sv){G.banner={txt:'WELCOME BACK',sub:`${MODES[mode].name} · wave ${G.wave}`,life:2.2};toast(G.wave?'Game resumed. Press Resume when ready.':'Game resumed')}
   else if(tutForce||!store.get('meadowsiege:tutDone')){tutForce=false;setTimeout(()=>openTut(0),60)}
   snap()}
 function snap(){if(!G||G.over||G.choice)return;if(G.queue.length||G.enemies.some(e=>!e.dead))return;
-  store.set('meadowsiege:save',{v:1,mode:G.mode,map:G.map,diff:G.diff,dateStr:G.dateStr,seed:G.seed,max:G.max,wave:G.wave,lives:G.lives,startLives:G.startLives,cash:G.cash,score:G.score,kills:G.kills,time:G.time,playOn:G.playOn,wonBefore:G.wonBefore,st:G.st,
+  store.set('meadowsiege:save',{v:1,mode:G.mode,level:G.level,ab:G.ab,map:G.map,diff:G.diff,dateStr:G.dateStr,seed:G.seed,max:G.max,wave:G.wave,lives:G.lives,startLives:G.startLives,cash:G.cash,score:G.score,kills:G.kills,time:G.time,playOn:G.playOn,wonBefore:G.wonBefore,st:G.st,
     towers:G.towers.map(t=>({k:t.k,lvl:t.lvl,i:t.i,spec:t.spec||null,tm:t.tm||'first',spent:t.spent,ang:t.ang}))})}
 function starsFor(){const r=G.lives/G.startLives;return r>=.9?3:r>=.5?2:1}
-function recordResult(won){store.set('meadowsiege:save',null);const k=bestKey(G.mode,G.dateStr,G.diff,G.map),prev=store.get(k),waves=won&&!G.playOn?G.wave:Math.max(0,G.wave-(won?0:1));
+function recordResult(won){store.set('meadowsiege:save',null);const k=bestKey(G.mode==='campaign'?'camp'+G.level:G.mode,G.dateStr,G.diff,G.map),prev=store.get(k),waves=won&&!G.playOn?G.wave:Math.max(0,G.wave-(won?0:1));
   const everWon=won||G.wonBefore;let better;
   if(G.mode==='trial')better=!prev||(everWon&&(!prev.won||G.time<prev.time))||(!everWon&&!prev.won&&G.score>prev.score);else better=!prev||G.score>prev.score;
   let best=prev;if(better){best={score:G.score,wave:waves,won:everWon||!!(prev&&prev.won),time:G.time};store.set(k,best)}
-  if(won){const s=starsFor(),sk='meadowsiege:stars:'+G.map+':'+G.diff;G.stars=s;if(s>(store.get(sk)||0))store.set(sk,s);if(s===3)unlock('stars');
+  if(won){const s=starsFor(),sk='meadowsiege:stars:'+G.map+':'+G.diff;G.stars=s;if(G.mode!=='campaign'&&s>(store.get(sk)||0))store.set(sk,s);if(s===3)unlock('stars');
     if(G.max>=100||G.mode==='sudden'){unlock('win');if(G.lives>=G.startLives)unlock('perfect')}
     if(G.diff==='hard')unlock('hard');if(G.mode==='sudden')unlock('sudden');if(G.mode==='trial')unlock('trial');if(G.mode==='challenge')unlock('picky')}
   return{best,waves}}
-function winChoice(){G.choice=true;sfx('win');G.score+=G.lives*500;const{best}=recordResult(true);G.wonBefore=true;G.winRec=best;
+function winChoice(){G.choice=true;sfx('win');buzz(150);
+  if(G.mode==='campaign'){G.score+=G.lives*500;recordResult(true);G.wonBefore=true;const p=campProg(),st=G.stars;if(st>(p[G.level]||0)){p[G.level]=st;store.set('meadowsiege:camp',p)}if(G.level===CAMP.length-1)unlock('camp');
+    const nx=G.level+1<CAMP.length;openModal(`Level ${G.level+1} complete!`,`<div class="bigStars">${starStr(st)}</div><p class="choiceTxt">${CAMP[G.level].n} held with ${G.lives} of ${G.startLives} lives left.${nx?` Next up: <b>${CAMP[G.level+1].n}</b>${CAMP[G.level+1].towers!==CAMP[G.level].towers?', with new gear to try':''}.`:' You have won the campaign!'}</p>
+     <div class="winBtns"><button class="btn" id="winQuit">See results</button><button class="btn primary" id="winNext">${nx?'Next level':'Finish'}</button></div>`,null,false);
+    $('winQuit').onclick=()=>{closeModal();showOver(true)};$('winNext').onclick=()=>{closeModal();if(nx){G.over=true;newGame('campaign',null,G.level+1)}else showOver(true)};return}
+G.score+=G.lives*500;const{best}=recordResult(true);G.wonBefore=true;G.winRec=best;
   openModal(MAPS[G.map].name+' held!',`<div class="bigStars">${starStr(G.stars)}</div><p class="choiceTxt">You cleared all ${G.max} waves with ${G.lives} of ${G.startLives} lives left${G.mode==='trial'?` in ${fmtTime(G.time)}`:''}.</p><p class="choiceTxt">Quit to see your results, or play on into <b>bonus waves</b> that keep getting tougher for a higher score.</p>
    <div class="winBtns"><button class="btn" id="winQuit">Quit</button><button class="btn primary" id="winOn">Play on</button></div>`,null,false);
   $('winQuit').onclick=()=>{closeModal();showOver(true)};
   $('winOn').onclick=()=>{closeModal();G.choice=false;G.playOn=true;G.max=0;G.counting=true;G.countdown=WAVE_GAP;$('prog').hidden=true;G.banner={txt:'BONUS WAVES',sub:'How far can you go?',life:2.4};infoKey='';snap()}}
-function gameOver(won){G.over=true;sfx(won?'win':'lose');if(!won)G.lives=0;else G.score+=G.lives*500;recordResult(won);showOver(won||G.wonBefore)}
-function showOver(won){G.over=true;store.set('meadowsiege:save',null);const best=store.get(bestKey(G.mode,G.dateStr,G.diff,G.map))||{score:G.score};
-  const bonus=G.playOn?Math.max(0,G.wave-1-(MODES[G.mode].max||0)):0,mx=MODES[G.mode].max;
+function gameOver(won){G.over=true;sfx(won?'win':'lose');buzz(300);if(!won)G.lives=0;else G.score+=G.lives*500;recordResult(won);showOver(won||G.wonBefore)}
+function showOver(won){G.over=true;store.set('meadowsiege:save',null);const best=store.get(bestKey(G.mode==='campaign'?'camp'+G.level:G.mode,G.dateStr,G.diff,G.map))||{score:G.score};
+  const mx=G.mode==='campaign'?CAMP[G.level].waves:MODES[G.mode].max,bonus=G.playOn?Math.max(0,G.wave-1-(mx||0)):0;
   $('overTitle').textContent=won?(G.playOn&&bonus>0?`Held + ${bonus} bonus waves`:`${MAPS[G.map].name} held`):'The fence fell';
   $('overStars').textContent=won&&G.stars?starStr(G.stars):'';
   const wv=G.playOn?G.wave-1:won?G.wave:Math.max(0,G.wave-1);
   $('rWave').textContent=mx&&!G.playOn?`${wv}/${mx}`:wv;$('rScore').textContent=fmt(G.score);$('rKills').textContent=fmt(G.kills);
   $('rBest').textContent=G.mode==='trial'&&best.won?fmtTime(best.time):fmt(best.score);$('rBestL').textContent=G.mode==='trial'&&best.won?'Best time':'Best';
-  $('overEyebrow').textContent=`${MODES[G.mode].name} · ${MAPS[G.map].name} · ${DIFFS[G.diff].name}`+(G.mode==='trial'?` · ${fmtTime(G.time)}`:'');
+  $('overEyebrow').textContent=`${G.mode==='campaign'?'Campaign level '+(G.level+1)+': '+CAMP[G.level].n:MODES[G.mode].name} · ${MAPS[G.map].name} · ${DIFFS[G.diff].name}`+(G.mode==='trial'?` · ${fmtTime(G.time)}`:'');
   // lives chart
   G.st.lives.push(Math.max(0,G.lives));drawChart();
   const tot=G.st.dmg.reduce((a,b)=>a+b,0)||1,mxD=Math.max(...G.st.dmg)||1;let mvp=-1;G.st.dmg.forEach((d,k)=>{if(d>0&&(mvp<0||d>G.st.dmg[mvp]))mvp=k});
@@ -1123,7 +1328,7 @@ function drawChart(){const c=$('statChart'),g=c.getContext('2d'),w=c.width,h=c.h
   const li=d.length-1;g.fillStyle='#ffd24a';g.beginPath();g.arc(X(li),Y(d[li]),4,0,7);g.fill()}
 $('startBtn').onclick=()=>newGame(selMode);$('howBtn').onclick=()=>{tutForce=true;newGame(selMode)};
 $('contBtn').onclick=()=>{const sv=store.get('meadowsiege:save');if(!sv||!MODES[sv.mode]){showStart();return}selMap=sv.map;newGame(sv.mode,sv)};
-$('againBtn').onclick=()=>newGame(lastMode);$('menuBtn').onclick=()=>{G=null;showStart()};
+$('againBtn').onclick=()=>newGame(lastMode,null,lastLevel);$('menuBtn').onclick=()=>{G=null;showStart()};
 $('copyBtn').onclick=()=>{const ta=$('shareText');const done=()=>{$('copyBtn').textContent='Copied'};
   const fb=()=>{ta.focus();ta.select();try{document.execCommand('copy');done()}catch(e){$('copyBtn').textContent='Press Ctrl+C to copy'}};
   try{navigator.clipboard.writeText(ta.value).then(done,fb)}catch(e){fb()}};
