@@ -289,6 +289,7 @@ button{font-family:var(--ui)}
         <button class="btn" id="autoBtn" aria-pressed="true">Auto-start on</button>
         <button class="btn" id="setBtn">Settings</button>
         <button class="btn" id="helpBtn">Help</button>
+        <button class="btn" id="exitBtn">Menu</button>
       </div>
     </div>
     <div style="height:10px"></div>
@@ -1076,7 +1077,7 @@ function togglePause(){if(!G||G.over)return;paused=!paused;$('pauseBtn').textCon
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&!G.over){snap();if(!paused)togglePause()}try{if(AU.ctx){document.hidden?AU.ctx.suspend():AU.ctx.resume()}}catch(e){}});
 document.addEventListener('keydown',ev=>{if(modalOpen){if(ev.key==='Escape'&&$('modal').dataset.closable)closeModal();return}if(tutI>=0){if(ev.key==='Escape')closeTut();return}if(!G||G.over||ev.target.tagName==='TEXTAREA')return;const k=ev.key.toLowerCase();
   if(k>='1'&&k<='6'){setBuild(buildType===+k-1?null:+k-1)}else if(k==='escape'){setBuild(null);sel=null;G.aim=false;infoKey=''}
-  else if(k===' '){ev.preventDefault();togglePause()}else if(k==='u')upgrade();else if(k==='s')sell();else if(k==='n')sendWave();else if(k==='z')undo();else if(k==='q')useAbil('strike');else if(k==='w')useAbil('freeze');else if(k==='e')useAbil('cash')});
+  else if(k===' '){ev.preventDefault();togglePause()}else if(k==='u')upgrade();else if(k==='s')sell();else if(k==='n')sendWave();else if(k==='z')undo();else if(k==='m')$('exitBtn').click();else if(k==='q')useAbil('strike');else if(k==='w')useAbil('freeze');else if(k==='e')useAbil('cash')});
 
 function bestKey(mode,date,d=diff,map=selMap){const base='meadowsiege:best:'+d+':'+(mode==='daily'?'daily:'+date:mode);return map==='meadow'?base:base+':'+map}
 function setDiff(d){diff=d;store.set('meadowsiege:diff',d);if(!$('startScreen').hidden)showStart()}
@@ -1252,6 +1253,9 @@ function placeTut(){if(tutI<0)return;const el=document.querySelector(TUT[tutI].t
 window.addEventListener('resize',placeTut);window.addEventListener('scroll',placeTut,{passive:true});
 $('tutNext').onclick=()=>{if(tutI>=TUT.length-1)closeTut();else{tutI++;showTutStep()}};$('tutBack').onclick=()=>{if(tutI>0){tutI--;showTutStep()}};$('tutSkip').onclick=closeTut;
 $('helpBtn').onclick=()=>openTut(0);
+$('exitBtn').onclick=()=>{if(!G||G.over){G=null;showStart();return}const mid=G.queue.length||G.enemies.some(e=>!e.dead);
+  openModal('Leave this game?',`<p class="choiceTxt">${mid?'This wave is still running. Your game is saved from the <b>start of this wave</b>, so you can carry on later with <b>Continue</b>.':'Your game is saved, so you can carry on later with <b>Continue</b> on the main menu.'}</p><div class="winBtns"><button class="btn" id="exStay">Keep playing</button><button class="btn primary" id="exGo">Main menu</button></div>`);
+  $('exStay').onclick=closeModal;$('exGo').onclick=()=>{snap();closeModal();G=null;showStart()}};
 // ---------- game setup, saving and results ----------
 function seedFor(mode,map,dateStr){if(mode==='endless')return(Math.random()*4294967296)>>>0;
   if(mode==='daily')return hashStr('meadow-siege:'+dateStr+(map==='meadow'?'':':'+map));
