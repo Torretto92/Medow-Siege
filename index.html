@@ -1036,11 +1036,11 @@ let infoKey='',hudCache={};
 function placeQuick(){const qb=$('qb');if(!G||!sel||G.over||!G.towers.includes(sel)||tutI>=0){if(!qb.hidden)qb.hidden=true;return}qb.hidden=false;
   const SW=(ROT?H:W)+2*M,sc=cv.clientWidth/SW,ox=cv.offsetLeft+cv.clientLeft,oy=cv.offsetTop+cv.clientTop,[X,Y]=toS(sel.x,sel.y),px=ox+X*sc,py=oy+Y*sc,d=Math.max(36,30*sc+14),uc=upCost(sel);
   const clampX=x=>Math.max(ox+24,Math.min(ox+cv.clientWidth-24,x)),put=(el,x,y)=>{el.style.left=clampX(x)+'px';el.style.top=Math.max(oy+22,Math.min(oy+cv.clientHeight-30,y))+'px'};
-  put($('qSell'),px+d,py);$('qSellC').textContent='+$'+sellVal(sel);
+  put($('qSell'),px-d,py);$('qSellC').textContent='+$'+sellVal(sel);
   const lv=sel.lvl;$('qUp').hidden=lv!==1&&lv!==2;$('qA').hidden=$('qB').hidden=lv!==3;
-  if(lv<3){put($('qUp'),px-d,py);$('qUpC').textContent='$'+uc;$('qUp').classList.toggle('poor',G.cash<uc)}
+  if(lv<3){put($('qUp'),px+d,py);$('qUpC').textContent='$'+uc;$('qUp').classList.toggle('poor',G.cash<uc)}
   if(lv===3){const sp=SPEC[sel.k];[['qA',0,-22],['qB',1,22]].forEach(([id,i,dy])=>{const b=$(id);const t=sp[i].n+' $'+uc;if(b.textContent!==t)b.textContent=t;b.className='qBtn qSpec '+'ab'[i]+(G.cash<uc?' poor':'');b.title=sp[i].d;
-    const w=b.offsetWidth||90;put(b,px-d-w/2+20,py+dy)})}}
+    const w=b.offsetWidth||90;put(b,px+d+w/2-20,py+dy)})}}
 $('qSell').onclick=()=>{if(sel)sell()};$('qUp').onclick=()=>{if(sel)upgrade()};$('qA').onclick=()=>{if(sel)upgrade('a')};$('qB').onclick=()=>{if(sel)upgrade('b')};
 function setText(id,v){if(hudCache[id]!==v){hudCache[id]=v;$(id).textContent=v}}
 function updateUI(){if(!G)return;updateAbil();{const u=$('undoBtn'),dis=!G.undo.length;if(u._d!==dis){u._d=dis;u.disabled=dis}}
