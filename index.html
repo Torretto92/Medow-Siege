@@ -358,6 +358,17 @@ const DIRS=[[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.4142],[1,-1,1.4142],[-1,1,1
 const idx=(c,r)=>r*COLS+c;
 const goalsE=LANE_E.map(r=>idx(COLS-1,r)),spawnsE=LANE_E.map(r=>idx(0,r));
 const goalsS=LANE_S.map(c=>idx(c,ROWS-1)),spawnsS=LANE_S.map(c=>idx(c,0));
+// Each map lists its routes: where raiders come in (from) and where they leave (to). A gate is 3 cells on one edge:
+// side L/R/T/B and the first row (L/R) or column (T/B). Maps without a list use the classic gates.
+const DEF_E={k:'E',from:['L',5],to:['R',5]},DEF_S={k:'S',from:['T',10],to:['B',10]};
+let RT=[];
+function gateIdx(side,p){return[0,1,2].map(k=>side==='L'?idx(0,p+k):side==='R'?idx(COLS-1,p+k):side==='T'?idx(p+k,0):idx(p+k,ROWS-1))}
+function routesOf(m){return m.routes||(m.S?[DEF_E,DEF_S]:[DEF_E])}
+const rtK=k=>RT.find(r=>r.k===k)||RT[0];
+const SIDEANG={L:0,T:Math.PI/2,R:Math.PI,B:-Math.PI/2};
+function entryPt(side,p){return side==='L'?[-CS*.6,(p+.5)*CS]:side==='R'?[W+CS*.6,(p+.5)*CS]:side==='T'?[(p+.5)*CS,-CS*.6]:[(p+.5)*CS,H+CS*.6]}
+function exitPt(side,p){return side==='R'?[W+CS,(p+.5)*CS]:side==='L'?[-CS,(p+.5)*CS]:side==='B'?[(p+.5)*CS,H+CS]:[(p+.5)*CS,-CS]}
+function pastExit(side,e){return side==='R'?e.x>W+CS*.5:side==='B'?e.y>H+CS*.5:side==='L'?e.x<-CS*.5:e.y<-CS*.5}
 const reserved=new Uint8Array(N);let MAP=null;
 const OUT='#1d2416';
 
@@ -394,10 +405,10 @@ const DIFFS={easy:{name:'Easy',lives:30,cash:260,hp:.75,reward:1.15,note:'30 liv
 const MAPS={
  meadow:{name:'The Meadow',theme:'meadow',S:false,rocks:[],brief:'An open meadow with nothing in your way. Every wall is yours to build.'},
  crossroads:{name:'Crossroads',theme:'cross',S:true,rocks:[],brief:'Raiders attack from two gates at once, from the left and from the north. One maze has to slow both columns.'},
- canyon:{name:'Red Canyon',theme:'canyon',S:false,rocks:[[4,2],[5,2],[5,3],[8,9],[8,10],[9,10],[11,1],[11,2],[12,6],[13,6],[15,10],[16,10],[16,9],[18,3],[18,4],[19,3]],brief:'Rock outcrops break up the canyon floor. Use them as free walls to stretch your maze further.'},
- frost:{name:'Frostfield',theme:'snow',S:false,rocks:[[6,3],[6,9],[11,6],[16,3],[16,9]],mod:{spd:1.12,slow:1.5},brief:'Raiders slide fast across the ice, but mud freezes them solid, so Mud Pumps hold raiders far longer here.'}};
-MAPS.gauntlet={name:'The Gauntlet',theme:'autumn',S:false,rocks:[[8,0],[8,1],[8,2],[8,3],[8,4],[8,8],[8,9],[8,10],[8,11],[8,12],[9,0],[9,1],[9,2],[9,3],[9,4],[9,8],[9,9],[9,10],[9,11],[9,12],[10,0],[10,1],[10,2],[10,3],[10,4],[10,8],[10,9],[10,10],[10,11],[10,12],[11,0],[11,1],[11,2],[11,3],[11,4],[11,8],[11,9],[11,10],[11,11],[11,12],[12,0],[12,1],[12,2],[12,3],[12,4],[12,8],[12,9],[12,10],[12,11],[12,12],[13,0],[13,1],[13,2],[13,3],[13,4],[13,8],[13,9],[13,10],[13,11],[13,12]],brief:'Rock walls squeeze the middle of the field into a narrow three-lane pass. Build your mazes in the open ground at each end and turn the pass into a killing zone for splash and flames.'};
-MAPS.fords={name:'Twin Fords',theme:'marsh',S:false,water:true,rocks:[[7,0],[7,3],[7,4],[7,5],[7,6],[7,7],[7,8],[7,9],[7,12],[8,0],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8],[8,9],[8,12],[13,0],[13,1],[13,2],[13,3],[13,4],[13,8],[13,9],[13,10],[13,11],[13,12],[14,0],[14,1],[14,2],[14,3],[14,4],[14,8],[14,9],[14,10],[14,11],[14,12]],brief:'Two rivers cut across the meadow. Raiders can only cross at the fords, so they have to zig-zag the whole field. Guard the crossings and stretch their route even further.'};
+ canyon:{name:'Red Canyon',theme:'canyon',S:false,routes:[{k:'E',from:['L',1],to:['R',9]},{k:'N',from:['B',3],to:['R',9]}],rocks:[[4,2],[5,2],[5,3],[8,9],[8,10],[9,10],[11,1],[11,2],[12,6],[13,6],[15,10],[16,10],[16,9],[18,3],[18,4],[19,3]],brief:'Two gates, one exit. Raiders pour in from the top-left and from the canyon floor below, then converge on the exit at the lower right. Rock outcrops make free walls.'},
+ frost:{name:'Frostfield',theme:'snow',S:false,routes:[{k:'E',from:['T',9],to:['B',9]}],rocks:[[6,3],[6,9],[11,6],[16,3],[16,9]],mod:{spd:1.12,slow:1.5},brief:'A north-to-south crossing: raiders come over the top ridge and head straight for the bottom gate, so you have less room to maze. They slide fast on the ice, but mud freezes them solid.'}};
+MAPS.gauntlet={name:'The Gauntlet',theme:'autumn',S:false,routes:[{k:'E',from:['L',5],to:['R',5]},{k:'N',from:['T',2],to:['R',5]},{k:'U',from:['B',2],to:['R',5]}],rocks:[[8,0],[8,1],[8,2],[8,3],[8,4],[8,8],[8,9],[8,10],[8,11],[8,12],[9,0],[9,1],[9,2],[9,3],[9,4],[9,8],[9,9],[9,10],[9,11],[9,12],[10,0],[10,1],[10,2],[10,3],[10,4],[10,8],[10,9],[10,10],[10,11],[10,12],[11,0],[11,1],[11,2],[11,3],[11,4],[11,8],[11,9],[11,10],[11,11],[11,12],[12,0],[12,1],[12,2],[12,3],[12,4],[12,8],[12,9],[12,10],[12,11],[12,12],[13,0],[13,1],[13,2],[13,3],[13,4],[13,8],[13,9],[13,10],[13,11],[13,12]],brief:'Three gates: raiders come in from the left, the top and the bottom, and every one of them has to squeeze through the narrow pass to reach the exit. Turn the pass into a killing zone for splash and flames.'};
+MAPS.fords={name:'Twin Fords',theme:'marsh',S:false,water:true,routes:[{k:'E',from:['R',1],to:['L',9]},{k:'N',from:['B',17],to:['L',9]}],rocks:[[7,0],[7,3],[7,4],[7,5],[7,6],[7,7],[7,8],[7,9],[7,12],[8,0],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8],[8,9],[8,12],[13,0],[13,1],[13,2],[13,3],[13,4],[13,8],[13,9],[13,10],[13,11],[13,12],[14,0],[14,1],[14,2],[14,3],[14,4],[14,8],[14,9],[14,10],[14,11],[14,12]],brief:'The raiders come from the east this time, through the top-right and bottom-right gates, and must cross both rivers at the fords to reach the far left. Guard the crossings and stretch their route even further.'};
 const MAPORDER=['meadow','crossroads','canyon','frost','gauntlet','fords'];
 const THEMES={
  meadow:{base:['#a4d05a','#86b944'],light:'205,236,120',dark:'92,148,46',dirt:'200,168,104',trail:'196,152,92',hue:82,sat:55,l0:36,flowers:['#ffffff','#fff3a0','#ffd34a','#ffb7d0'],treeHue:95,treeDark:'#2c5f1e',bush:['#a6dc5c','#5c9e30','#356b1c'],border:'tree',rock:['#e2dccb','#9a9484','#4a473e']},
@@ -436,7 +447,7 @@ const ACH=[
  ['spec','Specialist','Upgrade a tower to a level 4 specialisation.'],['boss','Boss Breaker','Destroy a Juggernaut.'],
  ['pyro','Pyromaniac','Stop 300 raiders with Scorchers in one game.'],['travel','World Traveller','Play all four maps.'],
  ['endure','Endurance','Reach wave 150 in Endless or bonus waves.'],['stars','Star Collector','Earn 3 stars on any map.'],['pathA','Committed','Take a tower to level 4 on Path A.'],['pathB','The Other Road','Take a tower to level 4 on Path B.'],['swarm','Bug Spray','Stop 300 Mites in one game.'],['elite','Elite Hunter','Stop 25 elite raiders in one game.'],['jammer','Signal Lost','Stop 40 Jammers in one game.'],['titan','Titan Slayer','Destroy the Siege Titan.'],['bosses4','Boss Collector','Destroy all four boss designs (any games).'],['gauntlet','Run the Gauntlet','Win a game on The Gauntlet.'],['fords','Ford Keeper','Win a game on Twin Fords.'],['chal3','Challenger','Complete 3 challenges.'],['chalall','Unstoppable','Complete every challenge.']];
-function setMap(id){MAP=MAPS[id]||MAPS.meadow;reserved.fill(0);[...goalsE,...spawnsE].forEach(i=>reserved[i]=1);if(MAP.S)[...goalsS,...spawnsS].forEach(i=>reserved[i]=1)}
+function setMap(id){MAP=MAPS[id]||MAPS.meadow;RT=routesOf(MAP).map(r=>({...r,spawns:gateIdx(...r.from),goals:gateIdx(...r.to)}));reserved.fill(0);for(const r of RT)[...r.goals,...r.spawns].forEach(i=>reserved[i]=1)}
 function challengeSet(seed){const r=mulberry32((seed^0xabcdef)>>>0),a=[0,1,2,3,4,5].map(k=>[r(),k]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]).slice(0,3);if(!a.includes(0)&&!a.includes(2))a[2]=r()<.5?0:2;return a.sort((x,y)=>x-y)}
 setMap('meadow');
 
@@ -586,13 +597,12 @@ function bestNext(f,i,extra){const c=i%COLS,r=(i/COLS)|0;let best=i,bd=f[i];
   for(const[dc,dr]of DIRS){const nc=c+dc,nr=r+dr;if(nc<0||nr<0||nc>=COLS||nr>=ROWS)continue;const j=idx(nc,nr);if(blocked(j,extra))continue;
     if(dc&&dr&&(blocked(idx(nc,r),extra)||blocked(idx(c,nr),extra)))continue;if(f[j]<bd-1e-6){bd=f[j];best=j}}
   return best}
-function tracePath(f,start,isE,extra){
-  const c0=start%COLS,r0=(start/COLS)|0;if(!isFinite(f[start]))return null;
-  const pts=[isE?[-CS/2,(r0+.5)*CS]:[(c0+.5)*CS,-CS/2]];let i=start,g=0;
+function tracePath(f,start,R,extra){
+  const c0=start%COLS,r0=(start/COLS)|0;if(!isFinite(f[start]))return null;const fs=R.from[0],ts=R.to[0];
+  const pts=[fs==='L'?[-CS/2,(r0+.5)*CS]:fs==='R'?[W+CS/2,(r0+.5)*CS]:fs==='T'?[(c0+.5)*CS,-CS/2]:[(c0+.5)*CS,H+CS/2]];let i=start,g=0;
   while(g++<400){const c=i%COLS,r=(i/COLS)|0;pts.push([(c+.5)*CS,(r+.5)*CS]);if(f[i]===0)break;const n=bestNext(f,i,extra);if(n===i)break;i=n}
-  const l=pts[pts.length-1];pts.push(isE?[W+CS/2,l[1]]:[l[0],H+CS/2]);return pts}
-function refreshFields(){G.fieldE=computeField(goalsE,-1);G.fieldS=computeField(goalsS,-1);
-  G.pathE=tracePath(G.fieldE,idx(0,6),true,-1);G.pathS=tracePath(G.fieldS,idx(11,0),false,-1)}
+  const l=pts[pts.length-1];pts.push(ts==='R'?[W+CS/2,l[1]]:ts==='L'?[-CS/2,l[1]]:ts==='B'?[l[0],H+CS/2]:[l[0],-CS/2]);return pts}
+function refreshFields(){G.F={};G.P={};for(const r of RT){G.F[r.k]=computeField(r.goals,-1);G.P[r.k]=tracePath(G.F[r.k],r.spawns[1],r,-1)}G.fieldE=G.F[RT[0].k];G.pathE=G.P[RT[0].k]}
 function cellOf(e){return[Math.floor(e.x/CS),Math.floor(e.y/CS)]}
 function checkPlace(i){
   if(i<0)return{ok:false,msg:''};
@@ -600,13 +610,13 @@ function checkPlace(i){
   if(G.rock[i])return{ok:false,msg:MAP.water?"Can't build on water":"Can't build on rocks"};
   if(G.towerAt[i])return{ok:false,msg:'',tower:true};
   for(const e of G.enemies){if(e.dead||e.air)continue;const[c,r]=cellOf(e);if(c>=0&&r>=0&&c<COLS&&r<ROWS&&idx(c,r)===i)return{ok:false,msg:'A raider is standing there'}}
-  const fE=computeField(goalsE,i),fS=computeField(goalsS,i);
+  const F={};for(const r of RT)F[r.k]=computeField(r.goals,i);
   const seal={ok:false,msg:'That would seal the route. Raiders need a way through.',seal:true};
-  if(!spawnsE.every(s=>isFinite(fE[s])))return seal;
-  if(MAP.S&&!spawnsS.every(s=>isFinite(fS[s])))return seal;
+  for(const r of RT)if(!r.spawns.every(s=>isFinite(F[r.k][s])))return seal;
   for(const e of G.enemies){if(e.dead||e.air)continue;const[c,r]=cellOf(e);if(c<0||r<0||c>=COLS||r>=ROWS)continue;
-    if(!isFinite((e.route==='E'?fE:fS)[idx(c,r)]))return seal}
-  return{ok:true,fE,fS,pathE:tracePath(fE,idx(0,6),true,i),pathS:tracePath(fS,idx(11,0),false,i)}
+    if(!isFinite((F[e.route]||F[RT[0].k])[idx(c,r)]))return seal}
+  const P={};for(const r of RT)P[r.k]=tracePath(F[r.k],r.spawns[1],r,i);
+  return{ok:true,F,P}
 }
 
 // ---------- map ----------
@@ -632,7 +642,7 @@ function genWave(w){
   if(w%10===0)for(let k=0;k<Math.max(1,Math.floor(w/20));k++)types.push('blimp');
   if(w%10===0&&w>=20)for(let k=0;k<1+Math.floor(w/50);k++)types.push('juggernaut');
   if(share){const np=['dasher'];if(w>=10)np.push('mite');if(w>=14)np.push('ironback');if(w>=22)np.push('jammer');if(w>=26)np.push('bulwark');if(types.includes('medic'))for(const x of['mite','jammer','bulwark']){const i=np.indexOf(x);if(i>=0&&np.length>1)np.splice(i,1)}const nt=np[Math.floor(r2()*np.length)],totW=types.reduce((a,t)=>a+ENEMIES[t].w,0),target=totW*share,keep=[];let rem=0;types.forEach((t,i)=>{if(rem<target&&i%5===2&&!ENEMIES[t].boss&&t!=='blimp')rem+=ENEMIES[t].w;else keep.push(t)});types.length=0;types.push(...keep);const n=Math.max(1,Math.min(nt==='mite'?30:32,Math.round(rem/ENEMIES[nt].w)));for(let k=0;k<n;k++)types.push(nt)}
-  return types.map(t=>{const o={type:t,w,lane:Math.floor(rng()*3),route:MAP.S&&rng()<.45?'S':'E',gap:ENEMIES[t].gap};if(w>=40&&!ENEMIES[t].boss&&t!=='blimp'&&t!=='mite'&&t!=='splitling'&&r2()<BAL.el)o.elite=1;return o})
+  return types.map(t=>{const o={type:t,w,lane:Math.floor(rng()*3),route:RT.length<2?RT[0].k:RT.length===2?(rng()<.45?RT[1].k:RT[0].k):RT[Math.floor(rng()*RT.length)].k,gap:ENEMIES[t].gap};if(w>=40&&!ENEMIES[t].boss&&t!=='blimp'&&t!=='mite'&&t!=='splitling'&&r2()<BAL.el)o.elite=1;return o})
 }
 function summarize(list){const m={};list.forEach(s=>m[s.type]=(m[s.type]||0)+1);
   return Object.entries(m).map(([t,n])=>`<b>${n}</b> ${ENEMIES[t].name[n>1?1:0]}${ENEMIES[t].air?' (air)':''}`).join(' · ')}
@@ -642,19 +652,22 @@ function launchWave(bonus){
 
 // ---------- entities ----------
 function spawnEnemy(s){const d=ENEMIES[s.type],D=DIFFS[G.diff],dh=(D.hp>1?1+(D.hp-1)*Math.min(1,s.w/45):D.hp)+(D.late||0)*s.w/100,hp=Math.round(d.hp*hpMul(s.w)*dh*(s.elite?1.8:1));let x,y,tx=0,ty=0;
-  if(s.route==='E'){x=-CS*.6;y=(LANE_E[s.lane]+.5)*CS;tx=W+CS;ty=(LANE_E[(s.lane+1)%3]+.5)*CS}
-  else{x=(LANE_S[s.lane]+.5)*CS;y=-CS*.6;tx=(LANE_S[(s.lane+2)%3]+.5)*CS;ty=H+CS}
+  {const R=rtK(s.route),ln=s.lane||0;[x,y]=entryPt(R.from[0],R.from[1]+ln);[tx,ty]=exitPt(R.to[0],R.to[1]+(ln+(R.k==='S'?2:1))%3)}
   if(d.boss&&s.x==null){buzz(220);G.banner={txt:BOSSN[bossVar(s.w)==='b_titan'&&(G.bossN||0)>=1?'juggernaut':bossVar(s.w)],sub:'A boss is coming',life:2}}if(s.x!=null){x=s.x;y=s.y}const shv=d.sh?Math.round(d.sh*hpMul(s.w)*dh):0;
-  G.bossN=d.boss?(G.bossN||0)+1:G.bossN;G.enemies.push({id:++uid,lead:d.boss&&G.bossN===1,bv:d.boss?(bossVar(s.w)==='b_titan'&&G.bossN>1?'juggernaut':bossVar(s.w)):null,type:s.type,route:s.route,air:d.air,x,y,tx,ty,hp,max:hp,w:s.w,sh:shv,shMax:shv,stunT:0,slowT:0,slowF:1,ang:s.route==='E'?0:Math.PI/2,
+  G.bossN=d.boss?(G.bossN||0)+1:G.bossN;G.enemies.push({id:++uid,lead:d.boss&&G.bossN===1,bv:d.boss?(bossVar(s.w)==='b_titan'&&G.bossN>1?'juggernaut':bossVar(s.w)):null,type:s.type,route:s.route,air:d.air,x,y,tx,ty,hp,max:hp,w:s.w,sh:shv,shMax:shv,stunT:0,slowT:0,slowF:1,ang:SIDEANG[rtK(s.route).from[0]],
     ox:(Math.random()-.5)*12,oy:(Math.random()-.5)*12,cash:Math.max(1,Math.round(d.cash*(1+BAL.c1*(s.w-1))*D.reward*(s.elite?2:1))),dead:false,rem:999,hit:0,ph:Math.random()*6,elite:s.elite||0,dc:1.2+(uid%5)*.35,abT:2+(uid%4)*.5});
   {const tk=s.elite?'elite':s.type;if(TIPS[tk]&&!(G.seen||(G.seen={}))[tk]){G.seen[tk]=1;if(typeof toast==='function'&&!$('gameUI').hidden)toast(TIPS[tk])}}}
-function navTarget(e){const f=e.route==='E'?G.fieldE:G.fieldS;let[c,r]=cellOf(e);
-  if(e.route==='E'){if(c<0)return[CS/2,(Math.max(0,Math.min(ROWS-1,r))+.5)*CS,f[idx(0,Math.max(0,Math.min(ROWS-1,r)))]+1];
-    if(c>=COLS||(c===COLS-1&&LANE_E.includes(r)))return[W+CS,e.y,0]}
-  else{if(r<0)return[(Math.max(0,Math.min(COLS-1,c))+.5)*CS,CS/2,f[idx(Math.max(0,Math.min(COLS-1,c)),0)]+1];
-    if(r>=ROWS||(r===ROWS-1&&LANE_S.includes(c)))return[e.x,H+CS,0]}
-  c=Math.max(0,Math.min(COLS-1,c));r=Math.max(0,Math.min(ROWS-1,r));const i=idx(c,r);
-  if(!isFinite(f[i]))return e.route==='E'?[W+CS,e.y,50]:[e.x,H+CS,50];
+function navTarget(e){const R=rtK(e.route),f=G.F[R.k];let[c,r]=cellOf(e);const fs=R.from[0],ts=R.to[0],gp=R.to[1],cr=v=>Math.max(0,Math.min(ROWS-1,v)),cc=v=>Math.max(0,Math.min(COLS-1,v));
+  if(fs==='L'&&c<0)return[CS/2,(cr(r)+.5)*CS,f[idx(0,cr(r))]+1];
+  if(fs==='R'&&c>=COLS)return[W-CS/2,(cr(r)+.5)*CS,f[idx(COLS-1,cr(r))]+1];
+  if(fs==='T'&&r<0)return[(cc(c)+.5)*CS,CS/2,f[idx(cc(c),0)]+1];
+  if(fs==='B'&&r>=ROWS)return[(cc(c)+.5)*CS,H-CS/2,f[idx(cc(c),ROWS-1)]+1];
+  if(ts==='R'&&(c>=COLS||(c===COLS-1&&r>=gp&&r<gp+3)))return[W+CS,e.y,0];
+  if(ts==='B'&&(r>=ROWS||(r===ROWS-1&&c>=gp&&c<gp+3)))return[e.x,H+CS,0];
+  if(ts==='L'&&(c<0||(c===0&&r>=gp&&r<gp+3)))return[-CS,e.y,0];
+  if(ts==='T'&&(r<0||(r===0&&c>=gp&&c<gp+3)))return[e.x,-CS,0];
+  c=cc(c);r=cr(r);const i=idx(c,r);
+  if(!isFinite(f[i]))return ts==='R'?[W+CS,e.y,50]:ts==='B'?[e.x,H+CS,50]:ts==='L'?[-CS,e.y,50]:[e.x,-CS,50];
   const n=bestNext(f,i,-1);const nc=n%COLS,nr=(n/COLS)|0;
   return[(nc+.5)*CS+e.ox,(nr+.5)*CS+e.oy,f[i]]}
 function stats(t){const s=baseStats(t);s.multi=1;s.stun=0;s.cluster=0;s.slowT=1;s.turn=1;s.pierce=0;s.heavy=1;s.area=0;s.puddle=0;s.rspd=1;s.smart=0;if(t.spec&&t.lvl>=3){const P=SPEC[t.k][t.spec==='a'?0:1],m=t.lvl>=4?P.m:P.m3;for(const k of['dmg','range','rate','splash','cone','burn'])if(m[k]&&s[k])s[k]*=m[k];if(m.slow)s.slow+=m.slow;if(m.chain)s.chain=Math.max(1,s.chain+m.chain);if(m.addBurn)s.burn=m.addBurn;if(m.multi)s.multi=m.multi;if(m.stun)s.stun=m.stun;if(m.cluster)s.cluster=m.cluster;if(m.slowT)s.slowT=m.slowT;for(const k of['turn','pierce','heavy','area','puddle','rspd','smart'])if(m[k])s[k]=m[k]}applyMods(t,s);return s}
@@ -734,8 +747,8 @@ function update(dt){
     if(e.air){tx=e.tx;ty=e.ty;e.rem=Math.hypot(tx-e.x,ty-e.y)/CS}else{const t=navTarget(e);tx=t[0];ty=t[1];e.rem=t[2]}
     const dx=tx-e.x,dy=ty-e.y,d=Math.hypot(dx,dy)||1,st=Math.min(d,sp*dt);e.x+=dx/d*st;e.y+=dy/d*st;e.walk=(e.walk||0)+st;if(!e.air&&e.type!=='trooper'&&st>0){e.dust=(e.dust||0)-dt;if(e.dust<=0){e.dust=e.type==='scooter'?.06:.1;const r=ENEMIES[e.type].r,l=.9;P({kind:'dust',x:e.x-Math.cos(e.ang)*r+rand(-3,3),y:e.y-Math.sin(e.ang)*r+rand(-3,3),life:l,max:l,size:2,grow:9,drag:.9,vy:-4})}}
     if(d>1){let da=Math.atan2(dy,dx)-e.ang;da=Math.atan2(Math.sin(da),Math.cos(da));e.ang+=da*Math.min(1,dt*10)}
-    if((e.route==='E'&&e.x>W+CS*.5)||(e.route==='S'&&e.y>H+CS*.5)){e.dead=true;e.leaked=true;G.lives-=ENEMIES[e.type].leak;G.st.leaks++;sfx('leak');buzz(60);
-      floatText(e.route==='E'?W-30:e.x,e.route==='E'?e.y:H-20,`-${ENEMIES[e.type].leak}`,'#ff8a6a');G.flash=.35}}
+    if(pastExit(rtK(e.route).to[0],e)){e.dead=true;e.leaked=true;G.lives-=ENEMIES[e.type].leak;G.st.leaks++;sfx('leak');buzz(60);
+      {const ts=rtK(e.route).to[0];floatText(ts==='R'?W-30:ts==='L'?30:e.x,ts==='R'||ts==='L'?e.y:ts==='B'?H-20:20,`-${ENEMIES[e.type].leak}`,'#ff8a6a')};G.flash=.35}}
 
   for(const t of G.towers){const d=TOWERS[t.k],s=stats(t);t.cd-=dt;t.flash=Math.max(0,t.flash-dt);t.recoil=Math.max(0,(t.recoil||0)-dt*7);if(t.jam>0){t.jam-=dt;continue}
     let tgt=null,best=Infinity,bp=9;
@@ -936,8 +949,7 @@ function drawAmb(t){if(!AMBOK())return;ambInit();const th=MAP.theme;
     for(let i=0;i<5;i++){const x=-80+u*(W+160)-Math.abs(i-2)*18,y=y0+(x*dy)+(i-2)*14,w=Math.sin(t*9+i)*2.5;ctx.beginPath();ctx.moveTo(x-7,y-3-w);ctx.lineTo(x,y);ctx.lineTo(x-7,y+3+w);ctx.stroke()}}
   ctx.globalAlpha=1}
 // little waving flags on the gate posts: red where raiders come in, gold at your base
-function drawFlags(t){const gapA=(LANE_E[0]-.4)*CS,gapB=(LANE_E[2]+1.4)*CS,gapC=(LANE_S[0]-.4)*CS,gapD=(LANE_S[2]+1.4)*CS,al=ROT?[0,-1]:[1,0],posts=[];
-  for(const y of[gapA-4,gapB+4]){posts.push([-6,y,'#e2643f']);posts.push([W+6,y,'#e9b23c'])}if(MAP.S)for(const x of[gapC-4,gapD+4]){posts.push([x,-6,'#e2643f']);posts.push([x,H+6,'#e9b23c'])}
+function drawFlags(t){const al=ROT?[0,-1]:[1,0],posts=gatePosts().map(([x,y,out])=>[x,y,out?'#e9b23c':'#e2643f']);
   for(const[px,py,col]of posts){const top=lift(19),P=(along,h)=>{const L=lift(h);return[px+al[0]*along+L[0],py+al[1]*along+L[1]]};
     ctx.strokeStyle='#3a2612';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+top[0],py+top[1]);ctx.stroke();
     ctx.fillStyle=col;ctx.strokeStyle='rgba(30,20,10,.7)';ctx.lineWidth=.8;ctx.beginPath();const N=6;
@@ -1215,12 +1227,17 @@ function boulder(b,x,y,r,TH,rng){b.fillStyle='rgba(30,20,10,.3)';b.beginPath();b
   const g=b.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r*1.1);g.addColorStop(0,TH.rock[0]);g.addColorStop(.6,TH.rock[1]);g.addColorStop(1,TH.rock[2]);b.fillStyle=g;b.beginPath();pts.forEach((p,k)=>k?b.lineTo(p[0],p[1]):b.moveTo(p[0],p[1]));b.closePath();b.fill();
   b.strokeStyle='rgba(30,20,12,.55)';b.lineWidth=1.4;b.stroke();b.strokeStyle='rgba(30,20,12,.3)';b.lineWidth=1;b.beginPath();b.moveTo(x-r*.2,y-r*.1);b.lineTo(x+r*.25,y+r*.2);b.stroke();
   b.fillStyle=TH.snow?'rgba(255,255,255,.9)':'rgba(255,255,255,.25)';b.beginPath();b.ellipse(x-r*.3,y-r*.4,r*(TH.snow?.55:.3),r*(TH.snow?.3:.16),-.4,0,7);b.fill()}
+// gate posts: two per gate, just outside the field edge
+function gatePosts(){const out=[];for(const R of RT)for(const[side,p,o]of[[R.from[0],R.from[1],0],[R.to[0],R.to[1],1]]){const a=(p-.4)*CS-4,b=(p+3.4)*CS+4;
+  if(side==='L'||side==='R'){const x=side==='L'?-6:W+6;out.push([x,a,o],[x,b,o])}else{const y=side==='T'?-6:H+6;out.push([a,y,o],[b,y,o])}}return out}
+function gateGap(side,v){for(const R of RT)for(const[sd,p]of[R.from,R.to])if(sd===side&&v>(p-.4)*CS-6&&v<(p+3.4)*CS+6)return true;return false}
 function buildBg(){const b=bgc.getContext('2d'),rng=mulberry32(0x5eed),FW=W+2*M,FH=H+2*M,TH=THEMES[MAP.theme];b.setTransform(DPR,0,0,DPR,0,0);b.translate(M,M);
   const base=b.createLinearGradient(0,-M,W*.3,H+M);base.addColorStop(0,TH.base[0]);base.addColorStop(1,TH.base[1]);b.fillStyle=base;b.fillRect(-M,-M,FW,FH);
   for(let k=0;k<90;k++){const light=rng()<.5;blob(b,rng()*W,rng()*H,30+rng()*100,light?TH.light:TH.dark,light?.18+rng()*.16:.12+rng()*.14)}
   for(let k=0;k<6;k++){const cx=3*CS+rng()*(W-6*CS),cy=CS+rng()*(H-2*CS);for(let j=0;j<7;j++)blob(b,cx+(rng()-.5)*60,cy+(rng()-.5)*40,14+rng()*22,TH.dirt,.32)}
-  for(const side of[0,1]){const x0=side?W+M:-M;for(let k=0;k<42;k++){const y=(LANE_E[0]-.2+rng()*3.4)*CS,xx=x0+(side?-1:1)*rng()*CS*3,r=12+rng()*24;blob(b,xx,y,r,TH.trail,.5)}}
-  if(MAP.S)for(const side of[0,1]){const y0=side?H+M:-M;for(let k=0;k<42;k++){const x=(LANE_S[0]-.2+rng()*3.4)*CS,yy=y0+(side?-1:1)*rng()*CS*3,r=12+rng()*24;blob(b,x,yy,r,TH.trail,.5)}}
+  if(MAP.routes){for(const R of RT)for(const[side,p]of[R.from,R.to])for(let k=0;k<42;k++){const u=(p-.2+rng()*3.4)*CS,d=rng()*CS*3,r=12+rng()*24;side==='L'?blob(b,-M+d,u,r,TH.trail,.5):side==='R'?blob(b,W+M-d,u,r,TH.trail,.5):side==='T'?blob(b,u,-M+d,r,TH.trail,.5):blob(b,u,H+M-d,r,TH.trail,.5)}}
+  else for(const side of[0,1]){const x0=side?W+M:-M;for(let k=0;k<42;k++){const y=(LANE_E[0]-.2+rng()*3.4)*CS,xx=x0+(side?-1:1)*rng()*CS*3,r=12+rng()*24;blob(b,xx,y,r,TH.trail,.5)}}
+  if(!MAP.routes&&MAP.S)for(const side of[0,1]){const y0=side?H+M:-M;for(let k=0;k<42;k++){const x=(LANE_S[0]-.2+rng()*3.4)*CS,yy=y0+(side?-1:1)*rng()*CS*3,r=12+rng()*24;blob(b,x,yy,r,TH.trail,.5)}}
   b.lineCap='round';
   for(let k=0;k<4600;k++){const x=rng()*W,y=rng()*H,h=2.5+rng()*4.5,l=TH.l0+rng()*30;b.strokeStyle=`hsla(${TH.hue+rng()*22},${TH.sat+rng()*18}%,${l}%,${.35+rng()*.4})`;b.lineWidth=.9+rng()*.7;
     b.beginPath();b.moveTo(x,y);b.lineTo(x-1.2,y-h);b.moveTo(x,y);b.lineTo(x+1.4,y-h*.85);b.stroke()}
@@ -1230,14 +1247,14 @@ function buildBg(){const b=bgc.getContext('2d'),rng=mulberry32(0x5eed),FW=W+2*M,
   if(MAP.water)drawWater(b,rng);else for(const[c,r]of MAP.rocks)boulder(b,(c+.5)*CS,(r+.5)*CS,17,TH,rng);
   // forest border: trees sit in the frame around the field, leaving the entry and exit gaps open
   const gapA=(LANE_E[0]-.4)*CS,gapB=(LANE_E[2]+1.4)*CS,inGap=y=>y>gapA-6&&y<gapB+6,gapC=(LANE_S[0]-.4)*CS,gapD=(LANE_S[2]+1.4)*CS,inGapX=x=>MAP.S&&x>gapC-6&&x<gapD+6;
-  const items=[];
-  for(let x=-M;x<=W+M;x+=20+rng()*10){if(inGapX(x))continue;items.push([x,-M+4+rng()*10,18+rng()*10,'t']);items.push([x,H+M-4-rng()*10,18+rng()*10,'t'])}
-  for(let y=-M;y<=H+M;y+=20+rng()*10){if(!inGap(y)){items.push([-M+4+rng()*10,y,18+rng()*10,'t']);items.push([W+M-4-rng()*10,y,18+rng()*10,'t'])}}
-  for(let x=0;x<W;x+=34+rng()*40){if(inGapX(x))continue;items.push([x,4+rng()*6,8+rng()*4,'b']);items.push([x,H-4-rng()*6,8+rng()*4,'b'])}
-  for(let y=0;y<H;y+=36+rng()*40){if(!inGap(y)){items.push([4+rng()*6,y,8+rng()*4,'b']);items.push([W-4-rng()*6,y,8+rng()*4,'b'])}}
+  const items=[],GR=!!MAP.routes,gT=x=>GR?gateGap('T',x):inGapX(x),gB=x=>GR?gateGap('B',x):inGapX(x),gL=y=>GR?gateGap('L',y):inGap(y),gR=y=>GR?gateGap('R',y):inGap(y);
+  for(let x=-M;x<=W+M;x+=20+rng()*10){if(GR){const a=-M+4+rng()*10,s1=18+rng()*10,a2=H+M-4-rng()*10,s2=18+rng()*10;if(!gT(x))items.push([x,a,s1,'t']);if(!gB(x))items.push([x,a2,s2,'t'])}else{if(inGapX(x))continue;items.push([x,-M+4+rng()*10,18+rng()*10,'t']);items.push([x,H+M-4-rng()*10,18+rng()*10,'t'])}}
+  for(let y=-M;y<=H+M;y+=20+rng()*10){if(GR){const a=-M+4+rng()*10,s1=18+rng()*10,a2=W+M-4-rng()*10,s2=18+rng()*10;if(!gL(y))items.push([a,y,s1,'t']);if(!gR(y))items.push([a2,y,s2,'t'])}else if(!inGap(y)){items.push([-M+4+rng()*10,y,18+rng()*10,'t']);items.push([W+M-4-rng()*10,y,18+rng()*10,'t'])}}
+  for(let x=0;x<W;x+=34+rng()*40){if(GR){const a=4+rng()*6,s1=8+rng()*4,a2=H-4-rng()*6,s2=8+rng()*4;if(!gT(x))items.push([x,a,s1,'b']);if(!gB(x))items.push([x,a2,s2,'b'])}else{if(inGapX(x))continue;items.push([x,4+rng()*6,8+rng()*4,'b']);items.push([x,H-4-rng()*6,8+rng()*4,'b'])}}
+  for(let y=0;y<H;y+=36+rng()*40){if(GR){const a=4+rng()*6,s1=8+rng()*4,a2=W-4-rng()*6,s2=8+rng()*4;if(!gL(y))items.push([a,y,s1,'b']);if(!gR(y))items.push([a2,y,s2,'b'])}else if(!inGap(y)){items.push([4+rng()*6,y,8+rng()*4,'b']);items.push([W-4-rng()*6,y,8+rng()*4,'b'])}}
   if(HQ())edgeAO(b);
   items.sort((a,b)=>a[1]-b[1]);for(const[x,y,r,t]of items)t==='t'?(TH.border==='cliff'?boulder(b,x,y,r*1.05,TH,rng):tree(b,x,y,r,rng,TH)):(TH.border==='cliff'?boulder(b,x,y,r*.8,TH,rng):bush(b,x,y,r,rng,TH));
-  for(const x of[-6,W+6])for(const y of[gapA-4,gapB+4])post(b,x,y);if(MAP.S)for(const y of[-6,H+6])for(const x of[gapC-4,gapD+4])post(b,x,y);
+  if(MAP.routes){for(const[x,y]of gatePosts())post(b,x,y)}else{for(const x of[-6,W+6])for(const y of[gapA-4,gapB+4])post(b,x,y);if(MAP.S)for(const y of[-6,H+6])for(const x of[gapC-4,gapD+4])post(b,x,y)}
   const v=b.createRadialGradient(W/2,H/2,H*.45,W/2,H/2,W*.7);v.addColorStop(0,'rgba(20,40,10,0)');v.addColorStop(1,'rgba(20,40,10,.28)');b.fillStyle=v;b.fillRect(-M,-M,FW,FH);
   const s=b.createLinearGradient(0,0,W,H);s.addColorStop(0,'rgba(255,248,200,.14)');s.addColorStop(1,'rgba(0,0,0,0)');b.fillStyle=s;b.fillRect(-M,-M,FW,FH);if(HQ())bgGrade(b,TH,FW,FH)}
 function chevrons(x,y,dir,t){ctx.save();ctx.translate(x,y);ctx.rotate(dir);ctx.strokeStyle='rgba(255,246,220,.55)';ctx.lineWidth=2.5;ctx.lineCap='round';
@@ -1279,11 +1296,11 @@ function render(t){
   for(const d of G.decals){ctx.globalAlpha=Math.min(1,d.life/d.max*2)*(d.kind==='mud'?.8:.9);blit(ctx,d.kind==='mud'?mudSpr():scorchSpr(),d.x,d.y,d.rot||0,d.r/20)}ctx.globalAlpha=1;
   for(const q of G.puddles||[]){const a=Math.min(1,q.t/.5);ctx.globalAlpha=a*.75;blit(ctx,mudSpr(),q.x,q.y,(q.x*7)%6,q.r/14);ctx.globalAlpha=a*.25;ctx.strokeStyle='#c9965a';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(q.x,q.y,q.r*.85,0,7);ctx.stroke()}ctx.globalAlpha=1;
   if(HQ()){drawTufts(t);drawVFX('low')}
-  for(const r of LANE_E){chevrons(16,(r+.5)*CS,0,t);chevrons(W-22,(r+.5)*CS,0,t)}
-  if(MAP.S)for(const c of LANE_S){chevrons((c+.5)*CS,16,Math.PI/2,t);chevrons((c+.5)*CS,H-22,Math.PI/2,t)}
+  for(const R of RT){for(const[side,p,out]of[[R.from[0],R.from[1],0],[R.to[0],R.to[1],1]])for(let k=0;k<3;k++){const q=(p+k+.5)*CS,a=out?{R:0,L:Math.PI,B:Math.PI/2,T:-Math.PI/2}[side]:SIDEANG[side],d=out?22:16;
+    if(side==='L')chevrons(d,q,a,t);else if(side==='R')chevrons(W-d,q,a,t);else if(side==='T')chevrons(q,d,a,t);else chevrons(q,H-d,a,t)}}
   if(buildType!==null){ctx.strokeStyle='rgba(20,40,10,.18)';ctx.lineWidth=1;ctx.beginPath();for(let c=1;c<COLS;c++){ctx.moveTo(c*CS,0);ctx.lineTo(c*CS,H)}for(let r=1;r<ROWS;r++){ctx.moveTo(0,r*CS);ctx.lineTo(W,r*CS)}ctx.stroke()}
   const pv=G.preview&&G.preview.i===hover&&buildType!==null?G.preview:null;
-  {const pc=SET.cb?'rgba(110,210,255,.95)':'rgba(255,232,150,.95)',dc=SET.cb?'rgba(150,220,255,.55)':'rgba(255,250,235,.4)';if(pv&&pv.ok){drawPath(pv.pathE,pc,[7,7],t);if(MAP.S)drawPath(pv.pathS,pc,[7,7],t)}else{drawPath(G.pathE,dc,[7,7],t);if(MAP.S)drawPath(G.pathS,dc,[7,7],t)}}
+  {const pc=SET.cb?'rgba(110,210,255,.95)':'rgba(255,232,150,.95)',dc=SET.cb?'rgba(150,220,255,.55)':'rgba(255,250,235,.4)';for(const R of RT){if(pv&&pv.ok)drawPath(pv.P[R.k],pc,[7,7],t);else drawPath(G.P[R.k],dc,[7,7],t)}}
   if(sel){const s=stats(sel);ctx.beginPath();ctx.arc(sel.x,sel.y,s.range,0,7);if(HQ()){const gr=ctx.createRadialGradient(sel.x,sel.y,s.range*.15,sel.x,sel.y,s.range);gr.addColorStop(0,'rgba(233,178,60,.03)');gr.addColorStop(1,'rgba(233,178,60,.2)');ctx.fillStyle=gr;ctx.fill();ctx.save();ctx.setLineDash([12,8]);ctx.lineDashOffset=-t*16;ctx.strokeStyle='rgba(255,222,130,.95)';ctx.lineWidth=2.4;ctx.stroke();ctx.restore()}else{ctx.fillStyle='rgba(233,178,60,.1)';ctx.fill();ctx.strokeStyle='rgba(233,178,60,.85)';ctx.lineWidth=2;ctx.stroke()}}
   if(sel&&HQ()){const pu=.5+.5*Math.sin(t*5);ctx.save();ctx.globalAlpha=.55+.35*pu;ctx.strokeStyle='#ffe08a';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(sel.x,sel.y+2,21+pu*2,19+pu*2,0,0,7);ctx.stroke();ctx.globalAlpha=.25;ctx.lineWidth=8;ctx.stroke();ctx.restore()}
   drawParts(LOW);
@@ -1392,7 +1409,7 @@ function place(i,quiet){const p=G.preview&&G.preview.i===i?G.preview:checkPlace(
   const cost=costOf(buildType);if(G.cash<cost){toast(`Need $${cost-G.cash} more for a ${d.name}`);sfx('deny');return}
   sfx('build');G.st.built[buildType]++;
   G.cash-=cost;const c=i%COLS,r=(i/COLS)|0;const t={id:++uid,k:buildType,lvl:1,x:(c+.5)*CS,y:(r+.5)*CS,i,ang:-Math.PI/2,cd:0,flash:0,side:0,spent:cost,tm:'first',spec:null,fresh:true};
-  G.towers.push(t);G.towerAt[i]=t;G.undo.push({t:'b',tw:t});computeCombos();G.fieldE=p.fE;G.fieldS=p.fS;G.pathE=p.pathE;G.pathS=p.pathS;pending=-1;
+  G.towers.push(t);G.towerAt[i]=t;G.undo.push({t:'b',tw:t});computeCombos();G.F=p.F;G.P=p.P;G.fieldE=p.F[RT[0].k];G.pathE=p.P[RT[0].k];pending=-1;
   t.born=G.time;setTimeout(()=>{if(G)for(let k=0;k<9;k++)puff(t.x,t.y+10,'dust',.7)},280/speed);
   setHover(i);infoKey='';snap()}
 function upgrade(spec){if(!sel||sel.lvl>=4)return;if(sel.lvl===2&&!spec)spec='a';if(sel.lvl===3)spec=sel.spec||spec||'a';const c=upCost(sel);if(G.cash<c){toast(`Need $${c-G.cash} more to upgrade`);return}
@@ -1457,11 +1474,15 @@ function bestText(){const b=store.get(bestKey(selMode,todayStr()));if(!b)return 
   if(selMode==='trial')return b.won?`Best time: ${fmtTime(b.time)} · ${fmt(b.score)} pts`:`Best: wave ${b.wave}/50 · ${fmt(b.score)} pts`;
   const mx=MODES[selMode].max;return !mx?`Best: wave ${b.wave} · ${fmt(b.score)} pts`:(b.won?`Cleared all ${mx} · best ${fmt(b.score)} pts`:`Best: wave ${b.wave}/${mx} · ${fmt(b.score)} pts`)}
 function drawPreview(){setMap(selMap);buildBg();const c=$('mapPrev'),g=c.getContext('2d'),k=c.width/(W+2*M);g.drawImage(bgc,0,0,c.width,c.height);
-  const y=(6.5*CS+M)*k,x=(11.5*CS+M)*k;g.save();g.strokeStyle='rgba(255,250,230,.75)';g.lineWidth=4;g.setLineDash([12,10]);g.beginPath();g.moveTo(10,y);g.lineTo(c.width-10,y);if(MAP.S){g.moveTo(x,10);g.lineTo(x,c.height-10)}g.stroke();g.restore();
+  const gc=(side,p)=>{const m=(p+1.5)*CS;return side==='L'?[10,(m+M)*k]:side==='R'?[c.width-10,(m+M)*k]:side==='T'?[(m+M)*k,10]:[(m+M)*k,c.height-10]};
+  g.save();g.strokeStyle='rgba(255,250,230,.75)';g.lineWidth=4;g.setLineDash([12,10]);g.beginPath();for(const R of RT){const a=gc(...R.from),b2=gc(...R.to);g.moveTo(a[0],a[1]);const hz=s=>s==='L'||s==='R';if(hz(R.from[0])!==hz(R.to[0])){hz(R.from[0])?g.lineTo(b2[0],a[1]):g.lineTo(a[0],b2[1])}g.lineTo(b2[0],b2[1])}g.stroke();g.restore();
   const arrow=(ax,ay,ang,col)=>{g.save();g.translate(ax,ay);g.rotate(ang);g.fillStyle=col;g.strokeStyle='rgba(20,24,12,.9)';g.lineWidth=3;g.beginPath();g.moveTo(-22,-18);g.lineTo(16,0);g.lineTo(-22,18);g.lineTo(-12,0);g.closePath();g.fill();g.stroke();g.restore()};
-  arrow(54,y,0,'#ffd24a');arrow(c.width-30,y,0,'#ef5a3a');if(MAP.S){arrow(x,50,Math.PI/2,'#ffd24a');arrow(x,c.height-26,Math.PI/2,'#ef5a3a')}
+  for(const R of RT){const[fs,fp]=R.from,[ts,tp]=R.to,a=gc(fs,fp),b2=gc(ts,tp);
+    if(fs==='L')arrow(54,a[1],0,'#ffd24a');else if(fs==='R')arrow(c.width-54,a[1],Math.PI,'#ffd24a');else if(fs==='T')arrow(a[0],50,Math.PI/2,'#ffd24a');else arrow(a[0],c.height-50,-Math.PI/2,'#ffd24a');
+    if(ts==='R')arrow(c.width-30,b2[1],0,'#ef5a3a');else if(ts==='L')arrow(30,b2[1],Math.PI,'#ef5a3a');else if(ts==='B')arrow(b2[0],c.height-26,Math.PI/2,'#ef5a3a');else arrow(b2[0],26,-Math.PI/2,'#ef5a3a')}
   g.font='700 22px "Barlow Semi Condensed",sans-serif';g.textBaseline='middle';g.lineWidth=5;g.strokeStyle='rgba(20,24,12,.85)';g.fillStyle='#fff6d0';
-  g.textAlign='left';g.strokeText('RAIDERS IN',20,y-40);g.fillText('RAIDERS IN',20,y-40);g.textAlign='right';g.strokeText('YOUR FENCE',c.width-16,y-40);g.fillText('YOUR FENCE',c.width-16,y-40)}
+  const lab=(txt,side,p)=>{const q=gc(side,p);let x,y2;if(side==='L'){g.textAlign='left';x=20;y2=q[1]-40}else if(side==='R'){g.textAlign='right';x=c.width-16;y2=q[1]-40}else{g.textAlign=q[0]<c.width*.25?'left':q[0]>c.width*.75?'right':'center';x=Math.max(16,Math.min(c.width-16,q[0]+(g.textAlign==='left'?40:g.textAlign==='right'?-40:0)));y2=side==='T'?34:c.height-34}g.strokeText(txt,x,y2);g.fillText(txt,x,y2)};
+  lab('RAIDERS IN',...RT[0].from);lab('YOUR FENCE',...RT[0].to)}
 $('modeList').innerHTML=MODEORDER.map(m=>`<button type="button" role="radio" data-m="${m}"><b>${MODES[m].name}</b><span>${MODES[m].sub}</span></button>`).join('');
 function showStart(){closeTut();document.querySelector('.top').hidden=true;$('startScreen').hidden=false;$('overScreen').hidden=true;$('gameUI').hidden=true;$('hud').hidden=true;$('modeTag').textContent='Open-field defence';
   document.querySelectorAll('.modeList button').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.m===selMode)));
