@@ -1075,14 +1075,62 @@ function baseSpr(k,lvl,spec=null){return mk(`base${k}_${lvl}_${spec}`,52,52,g=>{
   for(let i=0;i<6;i++){const a=i/6*6.283+.52;ball(g,Math.cos(a)*16,-1.5+Math.sin(a)*16,1.3,'#ffffff','#9a978a','#4a4842')}
   for(let l=0;l<4;l++){const a=Math.PI*(.36+l*.093),x=Math.cos(a)*18.2,y=2.5+Math.sin(a)*16.4,on=l<lvl;
     if(on){g.fillStyle='rgba(255,220,90,.45)';g.beginPath();g.arc(x,y,3.2,0,7);g.fill()}ball(g,x,y,1.9,on?'#fff6b0':'#5a5a50',on?'#ffc832':'#2c2c26',on?'#a06a00':'#151512')}
-  if(spec){g.save();g.translate(0,-16.4);g.rotate(Math.PI/4);g.fillStyle=spec==='a'?'#d36bff':'#3ad6ff';g.fillRect(-3.3,-3.3,6.6,6.6);g.strokeStyle='#1c1028';g.lineWidth=1;g.strokeRect(-3.3,-3.3,6.6,6.6);g.restore()}
+  if(spec&&lvl>=3){g.lineWidth=2.6;g.strokeStyle=spec==='a'?'#ffb43a':'#4fc3ff';g.beginPath();g.arc(0,-1.5,17.4,0,7);g.stroke()}if(spec){g.save();g.translate(0,-16.4);g.rotate(Math.PI/4);g.fillStyle=spec==='a'?'#ffb43a':'#4fc3ff';g.fillRect(-3.3,-3.3,6.6,6.6);g.strokeStyle='#1c1028';g.lineWidth=1;g.strokeRect(-3.3,-3.3,6.6,6.6);g.restore()}
   if(HQ()){if(lvl>=3){g.lineWidth=1.2;g.strokeStyle='rgba(235,240,230,.75)';g.beginPath();g.arc(0,-1.5,11.6,0,7);g.stroke()}if(lvl>=4){g.lineWidth=2.2;const gg=g.createLinearGradient(-14,-16,14,14);gg.addColorStop(0,'#fff4b0');gg.addColorStop(.5,'#f2b52a');gg.addColorStop(1,'#8a5a08');g.strokeStyle=gg;g.beginPath();g.arc(0,-1.5,17.2,0,7);g.stroke()}g.fillStyle='rgba(255,255,255,.22)';g.beginPath();g.ellipse(-6,-9,7,3.2,-.5,0,7);g.fill()}g.strokeStyle=HQ()?'rgba(22,28,12,.92)':'rgba(30,36,18,.7)';g.lineWidth=HQ()?1.7:1.1;g.beginPath();g.ellipse(0,2.5,18.5,17.5,0,0,7);g.stroke()})}
 // cartoon outline around a sprite
 function outl(key,src,col='rgba(28,34,16,.9)',w=1.1){return mk(key+':o',src.w+4,src.h+4,g=>{g.setTransform(1,0,0,1,0,0);const p=2*SS,o=w*SS;
   const tc=document.createElement('canvas');tc.width=src.width;tc.height=src.height;const tg=tc.getContext('2d');tg.drawImage(src,0,0);tg.globalCompositeOperation='source-in';tg.fillStyle=col;tg.fillRect(0,0,tc.width,tc.height);
   for(const[dx,dy]of[[-1,0],[1,0],[0,-1],[0,1],[-.7,-.7],[.7,-.7],[-.7,.7],[.7,.7]])g.drawImage(tc,p+dx*o,p+dy*o);g.drawImage(src,p,p)})}
 function turSpr(k,lvl,sp=null){const p=lvl>=3?sp:null;return outl(`tur${k}_${lvl}_${p}`,turRaw(k,lvl,p),undefined,HQ()?1.5:1.1)}
+
+const PA='#ffb43a',PB='#4fc3ff';
+const PT=[
+ // Rattler: A Rapid Fire = rotary gatling with ammo drum; B Armour Piercing = one long heavy barrel, scope and plating
+ (g,l,sp)=>{const big=l>=4;if(sp==='a'){const ys=big?[-6,-2,2,6]:[-4.5,0,4.5],L=big?22:18;for(const y of ys)cyl(g,4,y,L,2.6,'#55584f','#d2d1c4','#24251f');
+     cyl(g,4+L-5,0,4,big?8.5:7,'#3a3c35','#9a9d90','#1a1b17');cyl(g,10,0,3,big?8.5:7,'#3a3c35','#9a9d90','#1a1b17');
+     box(g,-15,-15,12,10,3,'#e8b04a','#7a4a10');g.fillStyle='#3a2a08';for(let i=0;i<4;i++)g.fillRect(-13+i*2.5,-13,1.2,6);if(big)box(g,-15,5,12,10,3,'#e8b04a','#7a4a10');
+     ball(g,0,0,9.5,'#ffe6a0','#d08a20','#5a3408');ball(g,-2.2,-1,4,'#fff6d0','#e8a840','#6a4010');g.lineWidth=2;g.strokeStyle=PA;g.beginPath();g.arc(0,0,9.5,0,7);g.stroke()}
+   else{const L=big?27:22;cyl(g,2,0,L,big?4.6:4,'#2e312c','#8c9086','#121310');box(g,L-2,-5.5,7,11,1.5,'#3a3d38','#121310');g.fillStyle='#9ac8e8';for(const y of[-3.5,1.5])g.fillRect(L,y,5,1.6);
+     cyl(g,-2,-8,13,2.2,'#2a3a48','#7ab8e0','#10202c');g.fillStyle='#bfe8ff';g.beginPath();g.arc(11,-8,1.4,0,7);g.fill();
+     for(const y of[-11,7])box(g,-11,y,14,4,1.5,'#6a7078','#22252a');ball(g,0,0,9.5,'#c8d8e0','#5a7a8a','#1e2e38');ball(g,-2.2,-1,4,'#e8f4fa','#8aaabb','#2a4050');g.lineWidth=2;g.strokeStyle=PB;g.beginPath();g.arc(0,0,9.5,0,7);g.stroke()}},
+ // Mud Pump: A Quicksand = twin heavy tanks + narrow jet; B Mud Flood = wide fan nozzle with twin hoses
+ (g,l,sp)=>{const big=l>=4;if(sp==='a'){const L=big?22:18;cyl(g,4,0,L,5,'#4a3220','#b48553','#2a1b0e');g.fillStyle='#24170c';g.fillRect(4+L-1,-3,4,6);g.fillStyle='#6a4020';g.beginPath();g.ellipse(4+L+5,2.5,2,3,0,0,7);g.fill();
+     for(const y of big?[-9,0,9]:[-7,7])ball(g,-12,y,5.2,'#c8925a','#7a4a1e','#2e1a08');ball(g,-2,0,10.5,'#ffcf86','#d06a1c','#5a2a0c');g.lineWidth=2.2;g.strokeStyle=PA;g.beginPath();g.arc(-2,0,10.5,0,7);g.stroke();
+     g.fillStyle='rgba(60,30,10,.55)';g.beginPath();g.arc(-2,0,5,0,7);g.fill()}
+   else{const L=big?14:11,w=big?14:10;cyl(g,4,0,L,5.5,'#4a3220','#b48553','#2a1b0e');g.fillStyle='#3a2410';g.beginPath();g.moveTo(4+L,-4);g.lineTo(4+L+9,-w);g.lineTo(4+L+11,-w+2);g.lineTo(4+L+11,w-2);g.lineTo(4+L+9,w);g.lineTo(4+L,4);g.closePath();g.fill();
+     g.fillStyle='#8a5a30';for(let y=-w+3;y<w-2;y+=3)g.fillRect(4+L+9,y,2,1.4);g.strokeStyle='#4e3f30';g.lineWidth=2.2;for(const sd of[-1,1]){g.beginPath();g.moveTo(-8,sd*7);g.quadraticCurveTo(0,sd*13,6,sd*5);g.stroke()}
+     ball(g,-2,0,10.5,'#ffe0b0','#a87040','#4a2a10');g.lineWidth=2.2;g.strokeStyle=PB;g.beginPath();g.arc(-2,0,10.5,0,7);g.stroke();ball(g,-5,-4,2.7,'#ffffff','#dddddd','#888888')}},
+ // Rocket Rack: A Heavy Explosives = two fat warheads; B Precision = tight pod of slim tubes, scope and laser
+ (g,l,sp)=>{const big=l>=4;if(sp==='a'){box(g,-12,-14,20,28,3,'#ff9a5a','#a8321a');g.fillStyle='rgba(0,0,0,.25)';for(let y=-13;y<14;y+=4)g.fillRect(-12,y,3,2);
+     for(const y of[-6.5,6.5]){const r=big?6:5.2,L=big?22:19;cyl(g,-6,y,L,r,'#5a5a52','#c8c8bc','#22221e');g.fillStyle='#ffd24a';g.beginPath();g.arc(-6+L,y,r,-Math.PI/2,Math.PI/2);g.fill();g.fillStyle='#d8321a';g.fillRect(-6+L-5,y-r,2.5,r*2)}
+     ball(g,-6,0,4.5,'#ffcf8a','#c86a2a','#4a1e08');g.lineWidth=2;g.strokeStyle=PA;g.strokeRect(-12,-14,20,28)}
+   else{box(g,-11,-10,18,20,3,'#7a8a9a','#2a3440');for(const y of big?[-6.6,-2.2,2.2,6.6]:[-4.5,0,4.5]){cyl(g,-6,y,20,2.2,'#3f3f3b','#a8b0b8','#1f1f1c');g.fillStyle='#0e1012';g.beginPath();g.arc(14,y,1.6,0,7);g.fill()}
+     cyl(g,-2,-13,big?16:13,2.4,'#2a3a48','#7ab8e0','#10202c');g.fillStyle='#ff3030';g.beginPath();g.arc(big?14:11,-13,1.5,0,7);g.fill();g.fillStyle='rgba(255,60,60,.35)';g.beginPath();g.arc(big?14:11,-13,3.2,0,7);g.fill();
+     ball(g,-6,0,4,'#c8e8ff','#4a7aa0','#16283a');g.lineWidth=2;g.strokeStyle=PB;g.strokeRect(-11,-10,18,20)}},
+ // Arc Coil: A Storm = three prongs with orbs and extra rings; B Overload = one tall lightning rod with a big orb
+ (g,l,sp)=>{const big=l>=4;if(sp==='a'){ball(g,0,0,11.5,'#d8f6fa','#5aaab8','#1c4a52');for(const[r,c]of[[10,'#ffd27a'],[7.2,'#efe9d9'],[4.6,'#d4ccb9']]){g.lineWidth=2.4;g.strokeStyle=c;g.beginPath();g.arc(0,-1.5,r,0,7);g.stroke()}
+     for(let i=0;i<(big?4:3);i++){const a=i/(big?4:3)*6.283-Math.PI/2,x=Math.cos(a)*15,y=Math.sin(a)*15-1.5;g.strokeStyle='#4a4f48';g.lineWidth=2.4;g.beginPath();g.moveTo(Math.cos(a)*9,Math.sin(a)*9-1.5);g.lineTo(x,y);g.stroke();ball(g,x,y,2.8,'#ffffff','#9ae8ff','#2a7a90')}
+     ball(g,0,-3,4,'#fffbe8','#ffd27a','#8a5a10')}
+   else{ball(g,0,0,11.5,'#c8e0f6','#3a6aa8','#122a52');g.lineWidth=3;g.strokeStyle='#d4ccb9';g.beginPath();g.arc(0,-1.5,9,0,7);g.stroke();g.lineWidth=2;g.strokeStyle=PB;g.beginPath();g.arc(0,-1.5,11.5,0,7);g.stroke();
+     g.fillStyle='#e8f6ff';g.strokeStyle='#2a5a80';g.lineWidth=1;g.beginPath();g.moveTo(-3,-4);g.lineTo(0,big?-24:-19);g.lineTo(3,-4);g.closePath();g.fill();g.stroke();
+     ball(g,0,big?-24:-19,big?5.5:4.5,'#ffffff','#9adcff','#2a6aa0');ball(g,0,-3,5,'#f6fdff','#9fbac2','#425760')}},
+ // Scorcher: A Inferno = red-hot nozzle and three fuel tanks with heat fins; B Wildfire = wide bell nozzle (twin at level 4)
+ (g,l,sp)=>{const big=l>=4,L=11+l*1.6;if(sp==='a'){for(const y of big?[-8,0,8]:[-5,5]){box(g,-16,y-3.4,11,6.8,3.4,'#ff7a3a','#a8200a');ball(g,-16,y,1.8,'#d8d4c4','#77746a','#2e2d28')}
+     cyl(g,3,0,L,4.8,'#5a3a2a','#e0a080','#2a120a');g.fillStyle='rgba(0,0,0,.4)';for(let i=0;i<Math.floor(L/2.5);i++)g.fillRect(5+i*2.5,-4.6,1,9.2);
+     const hot=g.createRadialGradient(4+L,0,0,4+L,0,6);hot.addColorStop(0,'#ffffc0');hot.addColorStop(.4,'#ff8a2a');hot.addColorStop(1,'rgba(220,40,0,0)');g.fillStyle=hot;g.beginPath();g.arc(4+L,0,6,0,7);g.fill();
+     ball(g,0,0,7.5,'#ffb48a','#c04a1a','#4a1408');g.lineWidth=2;g.strokeStyle=PA;g.beginPath();g.arc(0,0,7.5,0,7);g.stroke()}
+   else{for(const y of[-5,5]){box(g,-15,y-3.6,11,7.2,3.6,'#ffaa52','#b8400e');ball(g,-15,y,1.8,'#d8d4c4','#77746a','#2e2d28')}
+     for(const y of big?[-5,5]:[0]){cyl(g,3,y,L-2,big?3.4:4.4,'#4b4a44','#c3c0b4','#22211e');g.fillStyle='#33322e';g.beginPath();g.moveTo(2+L-2,y-3.5);g.lineTo(8+L,y-(big?7:9));g.lineTo(8+L,y+(big?7:9));g.lineTo(2+L-2,y+3.5);g.closePath();g.fill();g.fillStyle='#ff9a3a';g.fillRect(7+L,y-(big?5.5:7),1.6,big?11:14)}
+     ball(g,0,0,7.5,'#d8e8f0','#5a7a8a','#1e2e38');g.lineWidth=2;g.strokeStyle=PB;g.beginPath();g.arc(0,0,7.5,0,7);g.stroke()}},
+ // Thumper: A Cluster = wide barrel with four tubes and bomblet pods; B Rapid Battery = twin barrels with an autoloader
+ (g,l,sp)=>{const big=l>=4,L=10+l*1.5;if(sp==='a'){for(const[x,y]of[[-12,-10],[-12,10],[-16,-3],[-16,3]])ball(g,x,y,big?3.6:3,'#f6e494','#a8902e','#4a3e10');
+     ball(g,0,0,9.5,'#ffe0a0','#c8902a','#4a3008');cyl(g,0,0,L,big?11:10,'#3e4237','#a9ae9a','#1d1f1a');g.fillStyle='#2e3129';g.fillRect(L-1,-7,3.5,14);
+     g.fillStyle='#0c0d0b';for(const[a,b]of[[-3.5,-3.5],[-3.5,3.5],[3.5,-3.5],[3.5,3.5]]){g.beginPath();g.ellipse(L+2,a*.9,1.1,1.6,0,0,7);g.fill()}g.lineWidth=2;g.strokeStyle=PA;g.beginPath();g.arc(0,0,9.5,0,7);g.stroke()}
+   else{box(g,-15,-8,9,16,2,'#4a5868','#1a2028');g.fillStyle='#d8b84a';for(let y=-6;y<7;y+=3)g.fillRect(-14,y,7,1.6);
+     ball(g,0,0,9,'#d8e8f0','#5a7a8a','#1e2e38');for(const y of[-5,5]){cyl(g,0,y,L+2,5,'#3e4237','#a9ae9a','#1d1f1a');g.fillStyle='#0c0d0b';g.beginPath();g.ellipse(L+2.5,y,1.2,2.4,0,0,7);g.fill()}
+     g.lineWidth=2;g.strokeStyle=PB;g.beginPath();g.arc(0,0,9,0,7);g.stroke()}}];
 function turRaw(k,lvl,sp=null){return mk(`tur${k}_${lvl}_${sp}`,60,60,g=>{
+  if(sp&&lvl>=3&&PT[k]){PT[k](g,lvl,sp);trimTur(g,k,lvl);return}
   if(k===0){const L=14+lvl*2.5;
     for(const y of[-3.6,3.6]){cyl(g,3,y,L,3.4,'#55584f','#d2d1c4','#24251f');g.fillStyle='#151613';g.fillRect(3+L-1.5,y-2,2.5,4);g.fillStyle='#3a3c35';g.fillRect(8,y-2.1,2,4.2)}
     box(g,-9,5,9,7,1.5,'#b08a44','#5a3f18');g.fillStyle='rgba(255,240,200,.25)';g.fillRect(-8,5.6,7,1);
